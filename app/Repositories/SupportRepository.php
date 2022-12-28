@@ -1,24 +1,87 @@
 <?php
 namespace app\Repositories;
 
-use App\Models\Course;
+use App\Models\Support;
+use App\Repositories\Traits\RepositoryTrait;
 
-class CourseRepository
+class SupportRepository
 {
+    use RepositoryTrait;
+
     protected $entity;
 
-    public function __construct(Course $model)
+    public function __construct(Support $model)
     {
         $this->entity = $model;
     }
 
-    public function getAllCourses()
+    public function getMySupports(array $filters = [])
     {
-        return $this->entity->get();
+        $filters['user'] = true;
+
+        return $this->getSupports($filters);
     }
 
-    public function getCourse(string $identify)
+    public function getSupports(array $filters = [])
+    {
+        return $this->entity
+            ->where(function ($query) use ($filters){
+                if(isset($filters['lesson'])){
+                    $query->where('lesson_id', $filters['lesson']);
+                }
+
+                if(isset($filters['status'])){
+                    $query->where('status', $filters['status']);
+                }
+
+                if(isset($filters['filter'])){
+                    $filter = $filters['filter'];
+                    $query->where('description', 'LIKE', "%{$filter}%");
+                }
+
+                if(isset($filters['status'])){
+                    $user = $this->getUserAuth();
+                    $query->where('user_id', $user->id);
+                }
+            })
+            ->with('replies')
+            ->orderBy('updated_at')
+            ->get();
+    }
+
+    public function getSupportByUserId(string $identify)
     {
         return $this->entity->findOrFail($identify);
     }
+
+    public function createNewSupport(array $data): Support
+    {
+        $support = $this->getUserAuth()
+            ->supports()
+            ->create([
+                'lesson_id' => $data['lesson'],
+                'description' => $data['description'],
+                'status' => $data['status'],
+            ]);
+
+        return $support;
+    }
+
+    public function createReplyToSupportId($supportId, array $data)
+    {
+        $user = $this->getUserAuth();
+
+        return $this->getSupport($supportId)
+            ->replies()
+            ->create([
+                'description' => $data['description'],
+                'user_id' => $user->id,
+            ]);
+    }
+
+    private function getSupport(string $id)
+    {
+        return $this->entity->findOrFail($id);
+    }
+
 }

@@ -1,79 +1,31 @@
 <?php
 namespace app\Repositories;
 
-use App\Models\Support;
-use App\Models\User;
+use App\Models\ReplySupport;
+use App\Repositories\Traits\RepositoryTrait;
 
-class SupportRepository
+class ReplySupportRepository
 {
+    use RepositoryTrait;
     protected $entity;
 
-    public function __construct(Support $model)
+    public function __construct(ReplySupport $model)
     {
         $this->entity = $model;
     }
 
-    public function getSupports(array $filters = [])
-    {
-        return $this
-            ->getUserAuth()
-            ->supports()
-            ->where(function ($query) use ($filters){
-                if(isset($filters['lesson'])){
-                    $query->where('lesson_id', $filters['lesson']);
-                }
-
-                if(isset($filters['status'])){
-                    $query->where('status', $filters['status']);
-                }
-
-                if(isset($filters['filter'])){
-                    $filter = $filters['filter'];
-                    $query->where('description', 'LIKE', "%{$filter}%");
-                }
-            })
-            ->orderBy('updated_at')
-            ->get();
-    }
-
-    public function getSupportByUserId(string $identify)
-    {
-        return $this->entity->findOrFail($identify);
-    }
-
-    public function createNewSupport(array $data): Support
-    {
-        $support = $this->getUserAuth()
-            ->supports()
-            ->create([
-                'lesson_id' => $data['lesson'],
-                'description' => $data['description'],
-                'status' => $data['status'],
-            ]);
-
-        return $support;
-    }
-
-    public function createReplyToSupportId($supportId, array $data)
+    public function createReplyToSupport(array $data)
     {
         $user = $this->getUserAuth();
 
-        return $this->getSupport($supportId)
-            ->replies()
+        return $this->entity
             ->create([
+                'support_id' =>  $data['support'],
                 'description' => $data['description'],
                 'user_id' => $user->id,
             ]);
     }
 
-    private function getSupport(string $id)
-    {
-        return $this->entity->findOrFail($id);
-    }
 
-    private function getUserAuth():User
-    {
-//        return auth()->user();
-        return User::first();
-    }
+
 }

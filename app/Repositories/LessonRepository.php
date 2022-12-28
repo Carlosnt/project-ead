@@ -1,24 +1,47 @@
 <?php
-namespace app\Repositories;
+namespace App\Repositories;
 
-use App\Models\Course;
+use App\Models\Lesson;
+use App\Repositories\Traits\RepositoryTrait;
 
-class CourseRepository
+class LessonRepository
 {
+    use RepositoryTrait;
+
     protected $entity;
 
-    public function __construct(Course $model)
+    public function __construct(Lesson $model)
     {
         $this->entity = $model;
     }
 
-    public function getAllCourses()
+    public function getLessonsByModuleId( string $moduleId)
     {
-        return $this->entity->get();
+        return $this->entity
+            ->where('module_id', $moduleId)
+            ->with('supports.replies')
+            ->get();
     }
 
-    public function getCourse(string $identify)
+    public function getLesson(string $identify)
     {
         return $this->entity->findOrFail($identify);
+    }
+
+    public function markLessonViewed(string $lessonId)
+    {
+        $user = $this->getUserAuth();
+
+        $view= $user->views()->where('lesson_id', $lessonId)->first();
+
+        if($view){
+            $view->update([
+                'qty' => $view->qty + 1,
+            ]);
+        }
+
+        return $user->views()->create([
+            'lesson_id' => $lessonId
+        ]);
     }
 }

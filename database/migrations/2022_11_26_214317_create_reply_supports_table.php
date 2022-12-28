@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('courses', function (Blueprint $table) {
+        Schema::create('reply_support', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name');
+            $table->uuid('user_id')->nullable(false);
+            $table->uuid('support_id')->nullable(false);
             $table->text('description');
-            $table->string('image')->default();
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('courses');
+        Schema::dropIfExists('reply_support');
     }
 };

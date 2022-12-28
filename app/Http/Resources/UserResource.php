@@ -3,9 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
 
-class LessonResource extends JsonResource
+class UserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,12 +16,8 @@ class LessonResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => ucwords(strtolower($this->name)),
-            'description' => $this->description,
-            'embed' => $this->embed,
-            'duration' => $this->duration,
-            'url' => $this->url,
-            'views' => ViewResource::collection($this->whenLoaded('views')),
+            'name' => $this->name,
+            'email' => $this->email,
         ];
     }
 }

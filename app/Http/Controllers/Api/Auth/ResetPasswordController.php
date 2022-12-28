@@ -2,47 +2,53 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
-use App\Http\Resources\UserResource;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Password;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AuthRequest;
-use App\Models\User;
 
-class AuthController extends Controller
+
+
+class ResetPasswordController extends Controller
 {
-    public function auth(AuthRequest $request)
+    public function sendResetLink(Request $request)
     {
-        $user = User::where('email', $request->email)->first();
-
-        if (! $user || ! Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
-        }
-
-//        if($request->has('logout_others_divices')){$user->tokens()->delete();}
-        $user->tokens()->delete();
-
-        $token = $user->createToken($request->device_name)->plainTextToken;
-
-        return response()->json([
-            'token' => $token
+        $request->validate([
+            'email' => 'required|email'
         ]);
+
+       $status = Password::sendResetLink($request->only('email'));
+
+       return $status === Password::RESET_LINK_SENT
+           ? response()->json(['status' => __($status)])
+           : response()->json(['email' => __($status)], 422);
     }
 
-    public function me()
+    public function resetPassword(Request $request)
     {
-        $me = auth()->user();
-
-        return new UserResource($me);
-    }
-
-    public function logout()
-    {
-        auth()->user()->tokens()->delete();
-        return response()->json([
-            'logout success' => true
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:6|max:15',
         ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation','token'),
+            function ($user, $password){
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ])->setRememberToken(Str::random(60));
+
+                $user->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+
+        return $status === Password::RESET_LINK_SENT
+            ? response()->json(['status' => __($status)])
+            : response()->json(['email' => __($status)], 422);
     }
 }

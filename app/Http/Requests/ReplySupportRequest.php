@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class ViewRequest extends FormRequest
+class ReplySupportRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +25,8 @@ class ViewRequest extends FormRequest
     public function rules()
     {
         return [
-            'lesson' => ['required','exists:lessons,id'],
+            'description' => ['required', 'min:3', 'max:10000'],
+            'support' => ['required', 'exists:reply_support,id'],
         ];
     }
 }
