@@ -70,7 +70,7 @@
                             <div class="mt-2">
                             <Editor id="description" 
                             v-model="form.description" 
-                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></Editor>
                             <InputError :message="form.errors.description" class="mt-2"></InputError>
                             </div>
                         </div>
@@ -96,8 +96,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Editor from '@/Components/Editor.vue'
 import { Head, useForm } from '@inertiajs/vue3';
 import { Link } from '@inertiajs/vue3';
-import Swal from 'sweetalert2';
-import {  PlusIcon } from '@heroicons/vue/24/outline';
+import { PlusIcon } from '@heroicons/vue/24/outline';
 
 const form = useForm({
     name: '',

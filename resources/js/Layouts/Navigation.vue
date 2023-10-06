@@ -42,27 +42,46 @@
                 :is-active="'admin.users.*'" 
                 :link="route('admin.users.index')"                
             />
+            <Item 
+                :icon="'TagIcon'" 
+                :description="'Categorias'" 
+                :is-active="'admin.categories.*'" 
+                :link="route('admin.categories.index')"                
+            />
+            <SubMenu 
+                :icon="'AcademicCapIcon'" 
+                :description="'Cursos'" 
+                :is-active="['admin.courses.*','admin.cocategories.*']" 
+                :whenComponentActive="'Admin/Courses/Index'" 
+                >
+                <SubMenuItem 
+                    :description="'Categorias'" 
+                    :is-active="'admin.categories*'" 
+                    :link="route('admin.categories.index')"
+                />                 
+                 <SubMenuItem 
+                    :description="'Cursos'" 
+                    :is-active="'admin.courses*'" 
+                    :link="route('admin.courses.index')"
+                /> 
+                <SubMenuItem 
+                    :description="'Modulos'" 
+                    :is-active="'admin.modules.*'" 
+                    :link="route('admin.modudes.index')"
+                /> 
+                <SubMenuItem 
+                    :description="'Suportes'" 
+                    :is-active="'admin.supports.*'" 
+                    :link="route('admin.supports.index')"
+                /> 
+            </SubMenu>
 
             <Item 
                 :icon="'AcademicCapIcon'" 
-                :description="'Cursos'" 
-                :is-active="'admin.courses.*'" 
-                :link="route('admin.courses.index')"                
-            />
-
-           
-            <SubMenu 
-                :icon="'NewspaperIcon'" 
                 :description="'Suportes'" 
-                :is-active="['admin.supports.*']" 
-                :whenComponentActive="'Admin/Supports/List'" 
-                >
-                <SubMenuItem 
-                    :description="'Ver Suportes'" 
-                    :is-active="'admin.supports.*'" 
-                    :link="route('admin.supports.index')"
-                />                     
-            </SubMenu>
+                :is-active="'admin.supports.*'" 
+                :link="route('admin.supports.index')"                
+            />
             
         </nav>
     </div>
@@ -92,6 +111,3 @@ export default {
 
 </script>
 
-<style scoped>
-
-</style>
