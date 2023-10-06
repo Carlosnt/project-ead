@@ -9,7 +9,11 @@ class View extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['lesson_id', 'user_id', 'qty'];
+    protected $fillable = [
+        'lesson_id',
+        'user_id',
+        'qty'
+    ];
 
     public function user()
     {

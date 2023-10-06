@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->string('image')->default();
+            $table->boolean('available')->default(true);
             $table->timestamps();
         });
     }

@@ -5,14 +5,18 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Traits\UuidTrait;
 use App\Notifications\ResetPasswordNotification;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, UuidTrait;
+    use HasApiTokens, HasFactory, Notifiable, UuidTrait, SoftDeletes;
 
     public $incrementing = false;
 
@@ -27,6 +31,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'image',
     ];
 
     /**
@@ -46,6 +51,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'created_at' => 'datetime:Y-m-d',
     ];
 
     public function sendPasswordResetNotification($token)
@@ -57,11 +63,31 @@ class User extends Authenticatable
     {
         return $this->hasMany(Support::class);
     }
-
+    
     public function views()
     {
-        return $this->hasMany(View::class);
+        return $this->hasMany(View::class)
+        ->where(function ($query){
+            if(auth()->check()){
+                return $query->where('user_id', auth()->user()->id);
+            }
+        });
     }
 
+    public function getcreatedAtAttribute()
+    {
+        return Carbon::make($this->attributes['created_at'])->format('d/m/Y');
+    }
 
+    public function image(): Attribute
+    {
+        return new Attribute(
+            function($value){
+            if (!empty($value)) {
+                return Storage::url($value);
+            }
+            return asset('back/assets/images/no-image.png');
+        });
+    }
+        
 }

@@ -15,10 +15,18 @@ return new class extends Migration
     {
         Schema::create('supports', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('user_id')->nullable(false);
-            $table->uuid('lesson_id')->nullable(false);
+            $table->uuid('user_id')->index();
+            $table->uuid('lesson_id')->index();
             $table->enum('status',['P', 'A', 'C'])->default('P');
             $table->text('description');
+
+            $table->foreign('user_id')
+                    ->references('id')
+                    ->on('users');
+            $table->foreign('lesson_id')
+                    ->references('id')
+                    ->on('lessons');
+
             $table->timestamps();
         });
     }

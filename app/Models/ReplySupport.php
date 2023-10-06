@@ -19,7 +19,7 @@ class ReplySupport extends Model
 
     protected $touches = ['support'];
 
-    protected $fillable = ['description', 'user_id', 'support_id'];
+    protected $fillable = ['user_id', 'admin_id', 'support_id','description'];
 
 
     public function support()

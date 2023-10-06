@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReplySupportRequest;
 use App\Http\Resources\ReplySupportResource;
-use app\Repositories\ReplySupportRepository;
-use Illuminate\Http\Request;
+use App\Repositories\Eloquent\ReplySupportRepository;
 
 class ReplySupportController extends Controller
 {

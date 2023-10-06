@@ -58,7 +58,7 @@ return [
 
     'asset_url' => env('ASSET_URL'),
 
-    'url_frontend' => env('APP_FRONTEND', 'http://localhost:8081'),
+    'url_frontend' => env('APP_FRONTEND', 'http://localhost'),
 
     /*
     |--------------------------------------------------------------------------
@@ -84,7 +84,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'pt_BR',
 
     /*
     |--------------------------------------------------------------------------

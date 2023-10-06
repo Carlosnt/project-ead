@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(73, 34, 180) rgba(255, 255, 255, 0);
+  }
+  
+  /* Works on Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+  *::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0);
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    background-color:rgb(73, 34, 180);
+    border-radius: 15px;
+    
+  }

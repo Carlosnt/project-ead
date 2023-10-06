@@ -15,12 +15,17 @@ return new class extends Migration
     {
         Schema::create('lessons', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('module_id')->nullable(false);
+            $table->uuid('module_id')->index();
             $table->string('name')->unique();
             $table->string('url')->unique();
             $table->string('description')->nullable();
             $table->string('embed')->unique();
             $table->string('duration')->nullable();
+
+            $table->foreign('module_id')
+            ->references('id')
+            ->on('modules');
+            
             $table->timestamps();
         });
     }

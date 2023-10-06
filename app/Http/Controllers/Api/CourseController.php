@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CourseResource;
-use App\Repositories\CourseRepository;
-use Illuminate\Http\Request;
+use App\Repositories\Eloquent\CourseRepository;
 
 class CourseController extends Controller
 {

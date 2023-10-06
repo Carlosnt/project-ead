@@ -16,10 +16,18 @@ class Lesson extends Model
 
     protected $fillable = [
         'name',
+        'module_id',       
+        'url',
         'description',
         'embed',
-        'duration'
+        'duration',
+        
     ];
+
+    public function module()
+    {
+        return $this->belongsTo(Module::class);
+    }
 
     public function modules()
     {

@@ -7,7 +7,6 @@ use App\Http\Controllers\Api\SupportController;
 use App\Http\Controllers\Api\ReplySupportController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\ResetPasswordController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,7 +30,7 @@ Route::middleware(['auth:sanctum'])->group(function (){
     Route::get('/modules/{id}/lessons', [LessonController::class, 'index']);
     Route::get('/lessons/{id}', [LessonController::class, 'show']);
 
-    Route::get('/lessons', [LessonController::class, 'viewed']);
+    Route::post('/lessons/viewed', [LessonController::class, 'viewed']);
 
     Route::get('/my-supports', [SupportController::class, 'mySupports']);
     Route::get('/supports', [SupportController::class, 'index']);

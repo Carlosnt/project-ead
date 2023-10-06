@@ -1,5 +1,5 @@
 <?php
-namespace app\Repositories\Traits;
+namespace App\Repositories\Traits;
 
 use App\Models\User;
 
