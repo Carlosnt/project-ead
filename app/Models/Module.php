@@ -16,6 +16,7 @@ class Module extends Model
 
     protected $fillable = [
         'name',
+        'course_id'
     ];
 
     public function modules()

@@ -49,16 +49,31 @@
                         <p class="mt-1 text-sm leading-6 text-gray-600">Coloque as informações sobre o curso que quer cadastrar.</p>
 
                         <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                        <div class="sm:col-span-6">
+                        <div class="sm:col-span-4">
                             <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Nome</label>
                             <div class="mt-2">
                             <input type="text" id="name" v-model="form.name" autocomplete="Seu nome aqui" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                             <InputError :message="form.errors.name" class="mt-2"></InputError>
                             </div>
                         </div>
-                        <div class="mt-9 space-y-6">
+                    
+                        <div class="sm:col-span-3">
+                            <label for="category_id" class="block text-sm font-medium leading-6 text-gray-900">Categorias</label>
+                            <div class="mt-2">
+                            <select id="category_id" v-model="form.category_id" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                                <option disabled value="">Selecione uma categoria...</option>
+                                <option v-for="cat in categories" :value="cat.id">
+                                    {{ cat.name }}
+                                </option>
+                    
+                            </select>
+                             <InputError :message="form.errors.category_id" class="mt-2"></InputError>
+                            </div>
+                        </div>
+                    
+                        <div class="mt-9 space-y-4">
                             <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" value="" class="sr-only peer">
+                            <input type="checkbox" value="0" v-model="form.avaialble" class="sr-only peer">
                             <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                             <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Disponível</span>
                             </label>                        
@@ -97,9 +112,15 @@ import Editor from '@/Components/Editor.vue'
 import { Head, useForm } from '@inertiajs/vue3';
 import { Link } from '@inertiajs/vue3';
 import { PlusIcon } from '@heroicons/vue/24/outline';
+import Checkbox from '@/Components/Checkbox.vue';
+
+const props = defineProps({
+    categories: {type:Object}
+})
 
 const form = useForm({
     name: '',
+    category_id: '',
     avaialble: '',
     description: '',
 });

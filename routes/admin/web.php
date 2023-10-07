@@ -27,7 +27,7 @@ Route::group(['as' => 'admin.','prefix'=> 'admin'], function(){
 
         Route::resource('/modules', ModuleController::class);
         Route::resource('/supports', SupportController::class);
-
+        Route::resource('/lessons', LessonController::class);
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile/destroy', [ProfileController::class, 'destroy'])->name('profile.destroy');

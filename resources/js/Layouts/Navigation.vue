@@ -55,9 +55,9 @@
                 :whenComponentActive="'Admin/Courses/Index'" 
                 >
                 <SubMenuItem 
-                    :description="'Categorias'" 
-                    :is-active="'admin.categories*'" 
-                    :link="route('admin.categories.index')"
+                    :description="'Aulas'" 
+                    :is-active="'admin.lessons*'" 
+                    :link="route('admin.lessons.index')"
                 />                 
                  <SubMenuItem 
                     :description="'Cursos'" 
@@ -67,14 +67,19 @@
                 <SubMenuItem 
                     :description="'Modulos'" 
                     :is-active="'admin.modules.*'" 
-                    :link="route('admin.modudes.index')"
-                /> 
-                <SubMenuItem 
-                    :description="'Suportes'" 
-                    :is-active="'admin.supports.*'" 
-                    :link="route('admin.supports.index')"
+                    :link="route('admin.modules.index')"
                 /> 
             </SubMenu>
+
+           
+            
+
+            <Item 
+                :icon="'ChatBubbleOvalLeftIcon'" 
+                :description="'Suportes'" 
+                :is-active="'admin.supports.*'" 
+                :link="route('admin.supports.index')"                
+            />
 
             <Item 
                 :icon="'AcademicCapIcon'" 

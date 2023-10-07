@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CourseRequest;
+use App\Models\Category;
 use App\Models\Course;
 use App\Services\UploadFile;
 use App\Services\CourseService;
@@ -31,7 +32,10 @@ class CourseController extends Controller
 
     public function create()
     {
-        return Inertia::render('Admin/Courses/Create');
+        $categories = Category::all();
+        return Inertia::render('Admin/Courses/Create',[
+            "categories" => $categories
+        ]);
     }
 
     public function store(CourseRequest $request)
