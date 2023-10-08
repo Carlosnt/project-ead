@@ -40,8 +40,8 @@ class CourseController extends Controller
 
     public function store(CourseRequest $request)
     {
-        $data = $request->validated();
-       
+        $data = $request->all();
+       dd($data);
         $course = $this->service->create($data);
 
         if(!$course){
