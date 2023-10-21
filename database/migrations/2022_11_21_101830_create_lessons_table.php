@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('embed')->unique();
             $table->string('duration')->nullable();
+            $table->string('plataform', 20)->nullable();
 
             $table->foreign('module_id')
             ->references('id')

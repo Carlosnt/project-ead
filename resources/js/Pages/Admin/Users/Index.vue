@@ -245,23 +245,6 @@ const submitForm = () => {
        
     })
 };
-/*const submitForm = async () => {
-
-    let formData = new FormData();
-    formData.append('image', image)
-
-        await httpClient.post(route('admin.users.update.image', {'aplication': aplicationId}),formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data; charset=utf8; boundary='+Math.random().toString().substr(2),
-            },
-            
-        }).then(async response => {
-            if(response.request.sttus == 200 && response.data){
-                data = response.data;
-            }
-        });
-    
-}*/
 
 const deleteDepartment = (id,name) =>{
     const alerta = Swal.mixin({

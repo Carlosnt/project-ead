@@ -42,23 +42,20 @@
                 :is-active="'admin.users.*'" 
                 :link="route('admin.users.index')"                
             />
+           
             <Item 
-                :icon="'TagIcon'" 
-                :description="'Categorias'" 
-                :is-active="'admin.categories.*'" 
-                :link="route('admin.categories.index')"                
+                :icon="'AcademicCapIcon'" 
+                :description="'Cursos'" 
+                :is-active="['admin.courses.*','admin.modules.*','admin.lessons.*']" 
+                :link="route('admin.courses.index')"                  
             />
-            <SubMenu 
+            <!--<SubMenu 
                 :icon="'AcademicCapIcon'" 
                 :description="'Cursos'" 
                 :is-active="['admin.courses.*','admin.cocategories.*']" 
                 :whenComponentActive="'Admin/Courses/Index'" 
                 >
-                <SubMenuItem 
-                    :description="'Aulas'" 
-                    :is-active="'admin.lessons*'" 
-                    :link="route('admin.lessons.index')"
-                />                 
+                              
                  <SubMenuItem 
                     :description="'Cursos'" 
                     :is-active="'admin.courses*'" 
@@ -69,10 +66,8 @@
                     :is-active="'admin.modules.*'" 
                     :link="route('admin.modules.index')"
                 /> 
-            </SubMenu>
-
-           
-            
+                
+            </SubMenu>-->
 
             <Item 
                 :icon="'ChatBubbleOvalLeftIcon'" 
@@ -81,13 +76,6 @@
                 :link="route('admin.supports.index')"                
             />
 
-            <Item 
-                :icon="'AcademicCapIcon'" 
-                :description="'Suportes'" 
-                :is-active="'admin.supports.*'" 
-                :link="route('admin.supports.index')"                
-            />
-            
         </nav>
     </div>
 

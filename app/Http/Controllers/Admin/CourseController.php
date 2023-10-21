@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CourseRequest;
+use App\Http\Requests\UploadRequest;
 use App\Models\Category;
 use App\Models\Course;
 use App\Services\UploadFile;
 use App\Services\CourseService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class CourseController extends Controller
@@ -41,7 +43,7 @@ class CourseController extends Controller
     public function store(CourseRequest $request)
     {
         $data = $request->all();
-       dd($data);
+        $data['avaialble'] = isset($request->avaialble);
         $course = $this->service->create($data);
 
         if(!$course){
@@ -54,8 +56,10 @@ class CourseController extends Controller
     public function edit(Course $course)
     {
         $course = Course::findOrFail($course->id);
-        return Inertia::render('Admin/Admins/Edit', [
+        $categories = Category::all();
+        return Inertia::render('Admin/Courses/Edit', [
             'course' => $course,
+            'categories' => $categories
         ]);
     }
 
@@ -93,19 +97,18 @@ class CourseController extends Controller
         }
     }
 
-    public function uploadFile(Request $request, UploadFile $uploadFile, $id)
+    public function uploadFile(UploadRequest $request, UploadFile $uploadFile, $id)
     {
-        $adminUpdate = Course::FindOrFail($id);
-      
-        if($request->hasFile('image')){
-            if ($adminUpdate->image != null) {             
-                $uploadFile->removeFile($adminUpdate->image);
-                $adminUpdate->image = '';
-                $adminUpdate->save();
+        $courseUpdate = $this->service->findById($id);
+        if(!empty($request->hasFile('image'))){
+            if ($courseUpdate && $courseUpdate->image) {       
+                if(Storage::exists($courseUpdate->image)){
+                    Storage::delete($courseUpdate->image);
+                }   
             }
         }        
 
-        $path = $uploadFile->store($request->image, 'admins');
+        $path = $uploadFile->store($request->image, 'courses');
 
         if(!$this->service->update($id, ['image' => $path])){
             return back()->with('error','Opps!, Erro ao atualizar a foto curso.');

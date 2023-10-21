@@ -67,9 +67,8 @@
                 <tr>
                     <th scope="col" class="px-6 py-4 font-medium text-gray-900">Nome</th>
                     <th scope="col" class="px-6 py-4 font-medium text-gray-900">Categoria</th>
-                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Duração</th>
                     <th scope="col" class="px-6 py-4 font-medium text-gray-900">Status</th>
-                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Cadastro</th>
+                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Duração</th>                  
                     <th scope="col" class="px-6 py-4 font-medium text-gray-900"></th>
                 </tr>
                 </thead>
@@ -84,71 +83,31 @@
                         <img v-else :src="course.image"/></a>
                         <!--<span class="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-green-400 ring ring-white"></span>-->
                     </div>
-                    <div class="text-sm">
-                        <div class="font-medium text-gray-700">{{ course.name }}</div>
-                        <div class="text-gray-400">{{ course.email }}</div>
+                    <div class="text-sm px-6 py-4">
+                        <div class="font-medium text-gray-700">{{ course.name }}</div>                        
                     </div>
                     </th>
+                    
+                    <td class="px-6 py-4">12 horas</td>
                     <td class="px-6 py-4">{{  course.avaialble ? "Publicado" : "Não publicado"  }}</td>
-                    <td class="px-6 py-4">
-                    <span
-                        class="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs font-semibold text-green-600"
-                    >
-                        <span class="h-1.5 w-1.5 rounded-full bg-green-600"></span>
-                        Active
-                    </span>
-                    </td>
-                   
-                    <td class="px-6 py-4">{{ course.created_at }}</td>
+                    <td class="px-6 py-4">12 horas</td>
+                    
                     <td class="px-6 py-4">
                     <div class="flex justify-end gap-4">
                         <Link x-data="{ tooltip: 'Detalhes' }" :href="route('admin.courses.show', course.id)">
-                            <svg 
-                                class="w-6 h-6" 
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none" 
-                                viewBox="0 0 24 24"
-                                stroke-width="1.5"
-                                x-tooltip="tooltip">
-                                <path 
-                                stroke="currentColor" 
-                                stroke-linecap="round" 
-                                stroke-linejoin="round" 
-                                stroke-width="2" 
-                                d="M8 9h2v5m-2 0h4M9.408 5.5h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                            </svg>                        
+                            <InformationCircleIcon class="h-6 w-6 text-gray-500" />          
+                        </Link>
+
+                        <Link x-data="{ tooltip: 'Adicionar modulos' }" :href="route('admin.modules.index', course.id)">
+                            <Bars3Icon class="h-6 w-6 text-gray-500" />               
                         </Link>
 
                         <Link x-data="{ tooltip: 'Editar' }" :href="route('admin.courses.edit', course.id)">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke-width="1.5"
-                                stroke="currentColor"
-                                class="h-6 w-6"
-                                x-tooltip="tooltip">
-                                <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
-                                />
-                            </svg>
+                            <PencilIcon class="h-6 w-6 text-gray-500" />
                         </link>
 
-                        <Link x-data="{ tooltip: 'Deletar' }" @click="event => deleteDepartment(course.id, course.name)">
-                            <svg class="w-6 h-6"
-                            aria-hidden="true" 
-                            xmlns="http://www.w3.org/2000/svg" 
-                            fill="none" 
-                            viewBox="0 0 18 20">
-                                <path stroke="currentColor"
-                                 stroke-linecap="round" 
-                                 stroke-linejoin="round" 
-                                 stroke-width="1.5" 
-                                 d="M1 5h16M7 8v8m4-8v8M7 1h4a1 1 0 0 1 1 1v3H6V2a1 1 0 0 1 1-1ZM3 5h12v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5Z"/>
-                            </svg>
+                        <Link x-data="{ tooltip: 'Deletar' }" @click="event => deleteCourse(course.id, course.name)">
+                            <TrashIcon class="h-6 w-6 text-gray-500" />
                         </Link>
                         
                     </div>
@@ -198,7 +157,7 @@ import Modal from '@/Components/Modal.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
 import { ref } from 'vue';
-import { PlusIcon } from '@heroicons/vue/24/outline';
+import { PlusIcon,Bars3Icon,PencilIcon,TrashIcon,InformationCircleIcon } from '@heroicons/vue/24/outline';
 
 
 const imageInput = ref(null);
@@ -246,25 +205,9 @@ const submitForm = () => {
        
     })
 };
-/*const submitForm = async () => {
 
-    let formData = new FormData();
-    formData.append('image', image)
 
-        await httpClient.post(route('admin.users.update.image', {'aplication': aplicationId}),formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data; charset=utf8; boundary='+Math.random().toString().substr(2),
-            },
-            
-        }).then(async response => {
-            if(response.request.sttus == 200 && response.data){
-                data = response.data;
-            }
-        });
-    
-}*/
-
-const deleteDepartment = (id,name) =>{
+const deleteCourse = (id,name) =>{
     const alerta = Swal.mixin({
         buttonsStyling:true
     });

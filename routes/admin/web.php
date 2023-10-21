@@ -7,9 +7,9 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ModuleController;
+use App\Http\Controllers\Admin\LessonController;
 use App\Http\Controllers\Admin\SupportController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::group(['as' => 'admin.','prefix'=> 'admin'], function(){   
     Route::middleware('auth')->group(function () { 
@@ -25,9 +25,12 @@ Route::group(['as' => 'admin.','prefix'=> 'admin'], function(){
         Route::post('/courses/{id}/update-image', [CourseController::class, 'uploadFile'])->name('courses.update.image');
         Route::resource('/courses', CourseController::class);
 
-        Route::resource('/modules', ModuleController::class);
+        Route::resource('/courses/{courseId}/modules', ModuleController::class);
+       
+        Route::resource('/modules/{ModuleId}/lessons', LessonController::class);
+
         Route::resource('/supports', SupportController::class);
-        Route::resource('/lessons', LessonController::class);
+
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile/destroy', [ProfileController::class, 'destroy'])->name('profile.destroy');

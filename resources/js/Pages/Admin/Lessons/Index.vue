@@ -1,7 +1,9 @@
 <template>
-    <Head title="Categorias" />
+    <Head title="Cursos" />
 
     <AuthenticatedLayout>        
+
+    
             <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-3">
                 <li class="inline-flex items-center">
@@ -17,7 +19,7 @@
                     <svg class="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
                     </svg>
-                    <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">Categorias</span>
+                    <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">Cursos</span>
                 </div>
                 </li>
             </ol>
@@ -25,22 +27,19 @@
 
         <div class="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
             
-            <h3 class="text-lg leading-6 text-gray-900">Lista de Categorias</h3>
+            <h3 class="text-lg leading-6 text-gray-900">Lista de Cursos</h3>
 
             
             <div class="py-3 float-right">
-               
-                    <div class="py-3 float-right">
-                        <div class="bg-blue-400 rounded-lg place-items-center">
-                            <PrimaryButton @click="$event => openModal(1)">
-                                <span class="flex items-center gap-x-3 px-1 py-0.5">
-                                    <PlusIcon class="w-5 h-5 shrink-0"/> 
-                                    Nova categoria
-                                </span>
-                            </PrimaryButton>
-                        </div>
-                    </div>    
-                
+                <div class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
+                    <Link :href="route('admin.courses.create')">
+                        <span class="flex items-center gap-x-3 px-1 py-0.5">
+                            <PlusIcon class="w-5 h-5 shrink-0"/> 
+                            Novo Curso
+                        </span>
+                    </Link>
+                    
+                </div>
             </div>           
         </div>
        <div class="w-full rounded-lg bg-white mb-2">
@@ -67,30 +66,61 @@
                 <thead class="bg-gray-50">
                 <tr>
                     <th scope="col" class="px-6 py-4 font-medium text-gray-900">Nome</th>
-                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Cursos</th>
-                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Cadastro</th>                    
+                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Categoria</th>
+                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Status</th>
+                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Duração</th>                  
                     <th scope="col" class="px-6 py-4 font-medium text-gray-900"></th>
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 border-t border-gray-100">
                     
-                <tr v-for="category in categories" :key="category.id" class="hover:bg-gray-50">
+                <tr v-for="course in courses" :key="course.id" class="hover:bg-gray-50">
                     
                     <th class="flex gap-3 px-6 py-4 font-normal text-gray-900">
-                    <div class="text-sm">
-                        <div class="font-medium text-gray-700">{{ category.name }}</div>                        
+                    <div class="relative h-10 w-10">
+                        <a @click="event => openModal(course.name, course.id)">                           
+                        <img v-if="course.image" :src="course.image"/>
+                        <img v-else :src="course.image"/></a>
+                        <!--<span class="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-green-400 ring ring-white"></span>-->
+                    </div>
+                    <div class="text-sm px-6 py-4">
+                        <div class="font-medium text-gray-700">{{ course.name }}</div>                        
                     </div>
                     </th>
-                    <td class="px-6 py-4">4</td>                   
-                    <td class="px-6 py-4">{{ category.created_at }}</td>
+                    
+                    <td class="px-6 py-4">12 horas</td>
+                    <td class="px-6 py-4">{{  course.avaialble ? "Publicado" : "Não publicado"  }}</td>
+                    <td class="px-6 py-4">12 horas</td>
+                    
                     <td class="px-6 py-4">
                     <div class="flex justify-end gap-4">
+                        <Link x-data="{ tooltip: 'Detalhes' }" :href="route('admin.courses.show', course.id)">
+                            <svg 
+                                class="w-6 h-6" 
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none" 
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                x-tooltip="tooltip">
+                                <path 
+                                stroke="currentColor" 
+                                stroke-linecap="round" 
+                                stroke-linejoin="round" 
+                                stroke-width="2" 
+                                d="M8 9h2v5m-2 0h4M9.408 5.5h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                            </svg>                        
+                        </Link>
 
-                        <LinkButton x-data="{ tooltip: 'Editar' }" v-on:click="event => openModal(2, category.name, category.description, category.id)">
+                        <Link x-data="{ tooltip: 'Adicionar modulos' }" :href="route('admin.modules.module.course', course.id)">
+                            <Bars3Icon class="h-6 w-6 text-gray-500" />               
+                        </Link>
+
+                        <Link x-data="{ tooltip: 'Editar' }" :href="route('admin.courses.edit', course.id)">
                             <PencilIcon class="h-6 w-6 text-gray-500" />
-                        </LinkButton>
+                        </link>
 
-                        <Link x-data="{ tooltip: 'Deletar' }" @click="event => deleteRegistro(category.id, category.name)">
+                        <Link x-data="{ tooltip: 'Deletar' }" @click="event => deleteCourse(course.id, course.name)">
                             <TrashIcon class="h-6 w-6 text-gray-500" />
                         </Link>
                         
@@ -102,22 +132,16 @@
            
         </div>
             <Modal :show="modal" @close="closeModal">
-           
+                <form v-on:submit.prevent="submitForm()">
                 <h2 class="p-3 pt-3 text-lg text-center font.medium text-hray-900">{{ title}}</h2>
                 <div class="p-3 mt-3">
-                    <InputLabel for="name" value="Nome"></InputLabel>
-                    <input id="name" v-model="form.name" class="block w-full w-3/4 rounded-md form-input focus:border-indigo-600"
-                     />
-                    <InputError :message="form.errors.name" class="mt-2"></InputError>
+                    <InputLabel for="image" value="Imagem"></InputLabel>
+                    <input id="image" name="image" class="block w-full w-3/4 rounded-md form-input focus:border-indigo-600"
+                    @input="form.image = $event.target.files[0]" type="file" />
+                    <InputError :message="form.errors.image" class="mt-2"></InputError>
                 </div>
-
-                <div class="p-3 mt-3">
-                    <InputLabel for="description" value="Descrição"></InputLabel>
-                    <textarea id="description" v-model="form.description" class="block w-full w-3/4 rounded-md form-input focus:border-indigo-600"
-                     ></textarea>
-                    <InputError :message="form.errors.description" class="mt-2"></InputError>
-                </div>
-
+        
+            
                 <div class="p-3 flex justify-around">
                     <PrimaryButton :disabled="form.processing" @click="save">
                         <i class="fa fa-save">  Salvar</i>
@@ -128,6 +152,8 @@
                         </SecondarygButton>
                     </div>
                 </div>  
+            </form>    
+            
         </Modal>
 
     </AuthenticatedLayout>
@@ -140,49 +166,27 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondarygButton from '@/Components/SecondaryButton.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import LinkButton from '@/Components/LinkButton.vue';
+import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
 import { ref } from 'vue';
-import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { PlusIcon,Bars3Icon,PencilIcon,TrashIcon } from '@heroicons/vue/24/outline';
 
 
 const imageInput = ref(null);
 const modal = ref(false);
 const title = ref('');
-const operation = ref(1);
 const id = ref('');
 
 const props = defineProps({
-    categories: {type:Object}
+    courses: {type:Object}
 })
 
-const search = useForm({
-    filter: ''
-});
-
-const form = useForm({
-    name:'', 
-    description:''
-});
-
-const searchForm = () => {
-    search.get(route('admin.categories.index'))
-}
-
-const openModal = (op, name, description, category) =>{
+const openModal = (name, course) =>{
     modal.value = true;
-    operation.value = op;
-    id.value = category;
-    if(op == 1){
-        title.value = 'Nova Categoria';
-    }else{
-        title.value = 'Editar Categoria';
-        form.name=name;
-        form.description=description;
-        form.category=category;
-    }
+    id.value = course;
+    title.value = 'Adicionar foto em '+name;
 }
 
 const closeModal = () => {
@@ -191,19 +195,33 @@ const closeModal = () => {
     form.reset();
 }
 
-const save = () => {
-    if(operation.value == 1){
-        form.post(route('admin.categories.store'),{
-            onSuccess: () => {message('Categoria cadastrada com sucesso!')}
-        });
-    }else{
-        form.put(route('admin.categories.update',id.value),{
-            onSuccess: () => {message('Categoria atualizada com sucesso!')}
-        });
-    }
+const search = useForm({
+    filter: ''
+});
+
+const form = useForm({
+    image: ''
+});
+
+const message = (msg) =>{
+    form.reset();
+    closeModal();
+    Swal.fire({title:msg, icon:'success'});
 }
 
-const deleteRegistro = (id,name) =>{
+const searchForm = () => {
+    search.get(route('admin.courses.index'))
+}
+const submitForm = () => {
+    form.post(route('admin.courses.update.image', id.value), {
+        forceFormData: true,
+        onSuccess: () => {message('Foto atualizada com sucesso!')},
+       
+    })
+};
+
+
+const deleteCourse = (id,name) =>{
     const alerta = Swal.mixin({
         buttonsStyling:true
     });
@@ -215,15 +233,8 @@ const deleteRegistro = (id,name) =>{
         cancelButtonText:'<i class="fa-solid fa-ban text-red"</i> Cancel',
     }).then((result) =>{
         if(result.isConfirmed){
-            form.delete(route('admin.categories.destroy', id))
+            form.delete(route('admin.courses.destroy', id))
         }
     });
 }
-
-const message = (msg) =>{
-    form.reset();
-    closeModal();
-    Swal.fire({title:msg, icon:'success'});
-}
-
 </script>

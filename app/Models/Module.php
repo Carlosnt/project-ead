@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Traits\UuidTrait;
+use Illuminate\Support\Carbon;
 
 class Module extends Model
 {
@@ -32,5 +33,10 @@ class Module extends Model
     public function lessons()
     {
         return $this->hasMany(Lesson::class);
+    }
+
+    public function getcreatedAtAttribute()
+    {
+        return Carbon::make($this->attributes['created_at'])->format('d/m/Y');
     }
 }

@@ -3,87 +3,124 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CategoryRequest;
-use App\Http\Requests\UserRequest;
-use App\Models\Category;
-use App\Services\UploadFile;
-use App\Services\UserService;
+use App\Http\Requests\ModuleRequest;
+use App\Models\Module;
+use App\Models\Course;
+use App\Repositories\CourseRepositoryInterface;
+use App\Repositories\ModuleRepositoryInterface;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ModuleController extends Controller
 {
-    private $service;
+    protected $repository;
+    protected $repositoryCourse;
 
-    public function __construct(UserService $service)
-    {
-        $this->service = $service;
+    public function __construct(
+        CourseRepositoryInterface $repositoryCourse,
+        ModuleRepositoryInterface $repository
+    ) {
+        $this->repositoryCourse = $repositoryCourse;
+        $this->repository = $repository;
     }
-    
-    public function index(Request $request)
+
+    public function index(Request $request, $courseId)
     {
-        $categories = $this->service->getAll(
-            filter: $request->filter ?? ""
+        if (!$course = $this->repositoryCourse->findById($courseId))
+            return back();
+
+        $data = $this->repository->getAllByCourseId(
+            courseId: $courseId,
+            filter: $request->filter ?? ''
         );
-        return Inertia::render('Admin/Categories/Index', [
-            'categories' => $categories,
+        $modules = converItemsOfArrayToObject($data);
+
+        return Inertia::render('Admin/Courses/Modules/Index-modules', [
+            'course' => $course,
+            'modules' => $modules
+        ]);
+    }
+
+    public function moduleCourse(string $courseId){
+      
+        $courses = Course::where('avaialble','=', 1)->get();
+        $course = Course::findOrFail($courseId);
+        return Inertia::render('Admin/Modules/Module-course',[
+            'course' => $course,
+            'courses' => $courses
         ]);
     }
 
     public function create()
     {
-        return Inertia::render('Admin/Categories/Create');
-    }
-
-    public function store(UserRequest $request)
-    {
-        $data = $request->validated();
-        $data['password'] = bcrypt($data['password']);
-        $user = $this->service->create($data);
-
-        if(!$user){
-            return back()->with('error','Opps!, Erro ao Cadastrar o usuário.');
-        }
-
-        return redirect()->route('admin.categories.index')->with('success','Pronto!, Departamento cadastrado com sucesso.');
-    }
-
-    public function edit(Category $category)
-    {
-        $category = Category::findOrFail($category->id);
-        return Inertia::render('Admin/Categories/Edit', [
-            'category' => $category,
+        $courses = Course::where('avaialble','=', 1)->get();
+        
+        return Inertia::render('Admin/Modules/Create',[
+            'courses' => $courses,
         ]);
     }
 
-    public function update(CategoryRequest $request, $id)
+    public function store(ModuleRequest $request, $courseId)
     {
+        if (!$this->repositoryCourse->findById($courseId))
+        return back();
 
-        $data = $request->all();
-    
-        if(!$this->service->update($id, $data)){
-            return back()->with('error','Opps!, Erro ao atualizar o usuário.');
+        $module = $this->repository->createByCourse($courseId, $request->only(['name']));
+
+        if(!$module){
+            return back()->with('error','Opps!, Erro ao Cadastrar o módulo.');
         }
 
-        return redirect()->route('admin.categories.index')->with('success','Pronto!, Usuário atualizado com sucesso.');
+        return redirect()->route('admin.modules.index', $courseId);
     }
 
-    public function show(Category $category)
+    public function edit($courseId, $id)
     {
-        $category = Category::findOrFail($category->id);
-        return Inertia::render('Admin/Categories/Edit', [
-            'category' => $category,
+        if (!$course = $this->repositoryCourse->findById($courseId))
+            return back();
+
+        if (!$module = $this->repository->findById($id))
+            return back();   
+
+        $module = Module::findOrFail($module->id);
+        return Inertia::render('Admin/Modules/Edit', [
+            'module' => $module,
+            'course' => $course,
         ]);
     }
 
-    public function destroy(Category $category)
+    public function update(ModuleRequest $request, $courseId, $id)
     {
-        $category = Category::findOrFail($category->id);
+        if (!$this->repositoryCourse->findById($courseId))
+        return back();
     
-        if($category->destroy($category->id)){
-            return redirect()->route('admin.categories.index')->with('success','Pronto!, Usuário deletado com sucesso.');
+        if(!$this->repository->update($id, $request->only('name'))){
+            return back()->with('error','Opps!, Erro ao atualizar o módulo.');
+        }
+
+        return redirect()->route('admin.modules.index', $courseId)->with('success','Pronto!, Módulo atualizado com sucesso.');
+    }
+
+    public function show($courseId, $id)
+    {
+        if (!$course = $this->repositoryCourse->findById($courseId))
+            return back();
+
+        if (!$module = $this->repository->findById($id))
+            return back();
+
+        return Inertia::render('Admin/Modules/Edit', [
+            'module' => $module,
+            'course' => $course
+        ]);
+    }
+
+    public function destroy($courseId, $id)
+    {
+        if($this->repository->delete($id)){
+            return redirect()->route('admin.modules.index', $courseId)->with('success','Pronto!, Módulo deletado com sucesso.');
         }else{
-            return redirect()->route('admin.categories.index')->with('error','Opps!, Erro ao deletar o usuário.');
+            return redirect()->route('admin.modules.index', $courseId)->with('error','Opps!, Erro ao deletar o módulo.');
         }
     }
     

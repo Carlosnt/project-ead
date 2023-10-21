@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Traits\UuidTrait;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Storage;
 
 class Course extends Model
 {
@@ -30,5 +33,21 @@ class Course extends Model
     public function modules()
     {
         return $this->hasMany(Module::class);
+    }
+
+    public function getcreatedAtAttribute()
+    {
+        return Carbon::make($this->attributes['created_at'])->format('d/m/Y');
+    }
+
+    public function image(): Attribute
+    {
+        return new Attribute(
+            function($value){
+            if (!empty($value)) {
+                return Storage::url($value);
+            }
+            return asset('back/assets/images/no-image.png');
+        });
     }
 }

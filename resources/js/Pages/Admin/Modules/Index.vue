@@ -1,7 +1,9 @@
 <template>
-    <Head title="Categorias" />
+    <Head title="Módulos" />
 
     <AuthenticatedLayout>        
+
+    
             <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-3">
                 <li class="inline-flex items-center">
@@ -17,32 +19,28 @@
                     <svg class="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
                     </svg>
-                    <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">Categorias</span>
+                    <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">Módulos</span>
                 </div>
                 </li>
             </ol>
         </nav>
 
-        <div class="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
-            
-            <h3 class="text-lg leading-6 text-gray-900">Lista de Categorias</h3>
-
-            
+        <div class="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">            
+            <h3 class="text-lg leading-6 text-gray-900">Lista de Módulos</h3>            
             <div class="py-3 float-right">
-               
-                    <div class="py-3 float-right">
+                <div class="py-3 float-right">
                         <div class="bg-blue-400 rounded-lg place-items-center">
                             <PrimaryButton @click="$event => openModal(1)">
                                 <span class="flex items-center gap-x-3 px-1 py-0.5">
                                     <PlusIcon class="w-5 h-5 shrink-0"/> 
-                                    Nova categoria
+                                    Novo Módulo
                                 </span>
                             </PrimaryButton>
                         </div>
-                    </div>    
-                
+                    </div>   
             </div>           
         </div>
+
        <div class="w-full rounded-lg bg-white mb-2">
         <form v-on:submit.prevent="searchForm()" class="w-full grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                 <div class="p-3 mt-3 sm:col-span-4 sm:col-start-1">
@@ -51,46 +49,49 @@
                      type="text" />
                 </div>
         
-            
                 <div class="p-3 flex flex-col self-center items-center mt-3 sm:col-span-2 ">
                     <PrimaryButton :disabled="search.processing">
                         <i class="fa fa-search">  Pesquisar</i>
                     </PrimaryButton>
                     
                 </div>  
-            </form> 
-            </div> 
+        </form> 
+        </div> 
 
-        <div class="overflow-hidden rounded-lg border border-gray-200 shadow-md">
-            
+        <div class="overflow-hidden rounded-lg border border-gray-200 shadow-md">            
             <table class="w-full border-collapse bg-white text-left text-sm text-gray-500">
                 <thead class="bg-gray-50">
                 <tr>
                     <th scope="col" class="px-6 py-4 font-medium text-gray-900">Nome</th>
-                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Cursos</th>
-                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Cadastro</th>                    
+                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Curso</th>
+                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Cadastro</th>                  
                     <th scope="col" class="px-6 py-4 font-medium text-gray-900"></th>
                 </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100 border-t border-gray-100">
-                    
-                <tr v-for="category in categories" :key="category.id" class="hover:bg-gray-50">
+                <tbody class="divide-y divide-gray-100 border-t border-gray-100">                    
+                    <tr v-for="mod in modules" :key="mod.id" class="hover:bg-gray-50">
                     
                     <th class="flex gap-3 px-6 py-4 font-normal text-gray-900">
                     <div class="text-sm">
-                        <div class="font-medium text-gray-700">{{ category.name }}</div>                        
+                        <div class="font-medium text-gray-700">{{ mod.name }}</div>                        
                     </div>
                     </th>
                     <td class="px-6 py-4">4</td>                   
-                    <td class="px-6 py-4">{{ category.created_at }}</td>
+                    <td class="px-6 py-4">{{ mod.created_at }}</td>
                     <td class="px-6 py-4">
                     <div class="flex justify-end gap-4">
 
-                        <LinkButton x-data="{ tooltip: 'Editar' }" v-on:click="event => openModal(2, category.name, category.description, category.id)">
+                        <Link :href="route('admin.lessons.index', mod.id)" 
+                            class="coursor-pointer" x-data="{ tooltip: 'Editar' }">
+                            <VideoCameraIcon class="h-6 w-6 text-gray-500" />
+                        </Link>
+
+                        <LinkButton class="coursor-pointer" x-data="{ tooltip: 'Editar' }" 
+                        v-on:click="event => openModal(2, mod.name, mod.course_id, mod.id)">
                             <PencilIcon class="h-6 w-6 text-gray-500" />
                         </LinkButton>
 
-                        <Link x-data="{ tooltip: 'Deletar' }" @click="event => deleteRegistro(category.id, category.name)">
+                        <Link x-data="{ tooltip: 'Deletar' }" @click="event => deleteModule(mod.id, mod.name)">
                             <TrashIcon class="h-6 w-6 text-gray-500" />
                         </Link>
                         
@@ -101,8 +102,7 @@
             </table>
            
         </div>
-            <Modal :show="modal" @close="closeModal">
-           
+        <Modal :show="modal" @close="closeModal">               
                 <h2 class="p-3 pt-3 text-lg text-center font.medium text-hray-900">{{ title}}</h2>
                 <div class="p-3 mt-3">
                     <InputLabel for="name" value="Nome"></InputLabel>
@@ -110,14 +110,17 @@
                      />
                     <InputError :message="form.errors.name" class="mt-2"></InputError>
                 </div>
-
                 <div class="p-3 mt-3">
-                    <InputLabel for="description" value="Descrição"></InputLabel>
-                    <textarea id="description" v-model="form.description" class="block w-full w-3/4 rounded-md form-input focus:border-indigo-600"
-                     ></textarea>
-                    <InputError :message="form.errors.description" class="mt-2"></InputError>
-                </div>
-
+                    <InputLabel for="category_id" value="Curso"></InputLabel>
+                    <select id="category_id" v-model="form.course_id" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                        <option disabled value="">Selecione um curso...</option>
+                        <option v-for="course in courses" :value="course.id">
+                            {{ course.name }}
+                        </option>                        
+                    </select>
+                    <InputError :message="form.errors.course_id" class="mt-2"></InputError>
+                </div>        
+            
                 <div class="p-3 flex justify-around">
                     <PrimaryButton :disabled="form.processing" @click="save">
                         <i class="fa fa-save">  Salvar</i>
@@ -127,7 +130,7 @@
                             <i class="fa fa-plus text-red-900"> Cancelar</i>
                         </SecondarygButton>
                     </div>
-                </div>  
+                </div>         
         </Modal>
 
     </AuthenticatedLayout>
@@ -135,27 +138,26 @@
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import Pagination from '@/Components/Pagination.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondarygButton from '@/Components/SecondaryButton.vue';
 import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
 import LinkButton from '@/Components/LinkButton.vue';
+import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
 import { ref } from 'vue';
-import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { PlusIcon,PencilIcon,TrashIcon, VideoCameraIcon } from '@heroicons/vue/24/outline';
 
 
-const imageInput = ref(null);
 const modal = ref(false);
 const title = ref('');
 const operation = ref(1);
 const id = ref('');
 
 const props = defineProps({
-    categories: {type:Object}
+    modules: {type:Object},
+    courses: {type:Object}
 })
 
 const search = useForm({
@@ -164,24 +166,30 @@ const search = useForm({
 
 const form = useForm({
     name:'', 
-    description:''
+    course_id:''
 });
 
-const searchForm = () => {
-    search.get(route('admin.categories.index'))
+const message = (msg) =>{
+    form.reset();
+    closeModal();
+    Swal.fire({title:msg, icon:'success'});
 }
 
-const openModal = (op, name, description, category) =>{
+const searchForm = () => {
+    search.get(route('admin.modules.index'))
+}
+
+const openModal = (op, name, course_id, module) =>{
     modal.value = true;
     operation.value = op;
-    id.value = category;
+    id.value = module;
     if(op == 1){
-        title.value = 'Nova Categoria';
+        title.value = 'Novo Módulo';
     }else{
-        title.value = 'Editar Categoria';
+        title.value = 'Editar Módulo';
         form.name=name;
-        form.description=description;
-        form.category=category;
+        form.course_id=course_id;
+        form.module=module;
     }
 }
 
@@ -193,17 +201,17 @@ const closeModal = () => {
 
 const save = () => {
     if(operation.value == 1){
-        form.post(route('admin.categories.store'),{
-            onSuccess: () => {message('Categoria cadastrada com sucesso!')}
+        form.post(route('admin.modules.store'),{
+            onSuccess: () => {message('Módulo cadastrado com sucesso!')}
         });
     }else{
-        form.put(route('admin.categories.update',id.value),{
-            onSuccess: () => {message('Categoria atualizada com sucesso!')}
+        form.put(route('admin.modules.update', id.value),{
+            onSuccess: () => {message('Módulo atualizado com sucesso!')}
         });
     }
 }
 
-const deleteRegistro = (id,name) =>{
+const deleteModule = (id,name) =>{
     const alerta = Swal.mixin({
         buttonsStyling:true
     });
@@ -215,15 +223,8 @@ const deleteRegistro = (id,name) =>{
         cancelButtonText:'<i class="fa-solid fa-ban text-red"</i> Cancel',
     }).then((result) =>{
         if(result.isConfirmed){
-            form.delete(route('admin.categories.destroy', id))
+            form.delete(route('admin.modules.destroy', id))
         }
     });
 }
-
-const message = (msg) =>{
-    form.reset();
-    closeModal();
-    Swal.fire({title:msg, icon:'success'});
-}
-
 </script>

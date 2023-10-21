@@ -5,82 +5,114 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LessonRequest;
 use App\Models\Lesson;
+use App\Repositories\LessonRepositoryInterface;
+use App\Repositories\ModuleRepositoryInterface;
 use App\Services\LessonService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class LessonController extends Controller
 {
-    private $service;
+    protected $repository;
+    protected $repositoryModule;
 
-    public function __construct(LessonService $service)
+    public function __construct(
+        ModuleRepositoryInterface $repositoryModule,
+        LessonRepositoryInterface $repository)
     {
-        $this->service = $service;
+        $this->repositoryModule = $repositoryModule;
+        $this->repository = $repository;
     }
-    
-    public function index(Request $request)
+
+    public function index(Request $request, $moduleId)
     {
-        $categories = $this->service->getAll(
-            filter: $request->filter ?? ""
+        if (!$module = $this->repositoryModule->findById($moduleId))
+        return back();
+
+        $data = $this->repository->getAllByModuleId(
+            moduleId: $moduleId,
+            filter: $request->filter ?? ''
         );
-        return Inertia::render('Admin/Categories/Index', [
-            'categories' => $categories,
+        $lessons = converItemsOfArrayToObject($data);
+
+        return Inertia::render('Admin/Courses/Lessons/Index-lessons', [
+            'lessons' => $lessons,
+            'module' => $module
         ]);
     }
 
-    public function create()
+    public function create($moduleId)
     {
-        return Inertia::render('Admin/Categories/Create');
+        if (!$module = $this->repositoryModule->findById($moduleId))
+            return back();
+
+        return Inertia::render('Admin/Courses/Lessons/Create',[
+            'module' => $module
+        ]);
     }
 
-    public function store(LessonRequest $request)
+    public function store(LessonRequest $request, $moduleId)
     {
-        $data = $request->validated();
-        $user = $this->service->create($data);
+        if (!$this->repositoryModule->findById($moduleId))
+        return back();
+       
+        $lesson = $this->repository->createByModule($moduleId, $request->all());
 
-        if(!$user){
-            return back()->with('error','Opps!, Erro ao Cadastrar o categoria.');
+        if(!$lesson){
+            return back()->with('error','Opps!, Erro ao Cadastrar a aula.');
         }
 
-        return redirect()->route('admin.categories.index')->with('success','Pronto!, Categoria cadastrada com sucesso.');
+        return redirect()->route('admin.lessons.index', $moduleId);
+        
     }
 
-    public function edit(Lesson $category)
+    public function edit($moduleId, $id)
     {
-        $category = Lesson::findOrFail($category->id);
-        return Inertia::render('Admin/Categories/Edit', [
-            'category' => $category,
+        if (!$module = $this->repositoryModule->findById($moduleId))
+            return back();
+
+        if (!$lesson = $this->repository->findById($id))
+            return back();   
+
+        return Inertia::render('Admin/Courses/Lessons/Edit', [
+            'module' => $module,
+            'lesson' => $lesson,
         ]);
     }
 
-    public function update(LessonRequest $request, $id)
+    public function update(LessonRequest $request, $moduleId, $id)
     {
-
-        $data = $request->all();
+        if (!$this->repositoryModule->findById($moduleId))
+        return back();
     
-        if(!$this->service->update($id, $data)){
-            return back()->with('error','Opps!, Erro ao atualizar o usuário.');
+        if(!$this->repository->update($id, $request->all())){
+            return back()->with('error','Opps!, Erro ao atualizar a aula.');
         }
 
-        return redirect()->route('admin.categories.index')->with('success','Pronto!, Usuário atualizado com sucesso.');
+        return redirect()->route('admin.lessons.index', $moduleId)->with('success','Pronto!, Aula atualizada com sucesso.');
+        
     }
 
-    public function show(Lesson $category)
+    public function show($moduleId, $id)
     {
-        $category = Lesson::findOrFail($category->id);
-        return Inertia::render('Admin/Categories/Edit', [
-            'category' => $category,
+        if (!$module = $this->repositoryModule->findById($moduleId))
+        return back();
+
+        if (!$lesson = $this->repository->findById($id))
+            return back();   
+
+        return Inertia::render('Admin/Courses/Lessons/Show', [
+            'lesson' => $lesson,
+            'module' => $module
         ]);
     }
 
-    public function destroy(Lesson $category)
+    public function destroy($moduleId, $id)
     {
-        $category = Lesson::findOrFail($category->id);
-    
-        if($category->destroy($category->id)){
-            return redirect()->route('admin.categories.index')->with('success','Pronto!, Usuário deletado com sucesso.');
+        if($this->repository->delete($id)){
+            return redirect()->route('admin.lessons.index', $moduleId)->with('success','Pronto!, Aula deletada com sucesso.');
         }else{
-            return redirect()->route('admin.categories.index')->with('error','Opps!, Erro ao deletar o usuário.');
+            return redirect()->route('admin.lessons.index', $moduleId)->with('error','Opps!, Erro ao deletar a aula.');
         }
     }
     

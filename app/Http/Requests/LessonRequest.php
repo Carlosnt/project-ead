@@ -11,7 +11,9 @@ class LessonRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255', Rule::unique('lessons','name')->ignore($this->lesson)],
-            'course_id' => ['required'],
+            'embed' => ['required', Rule::unique('lessons','embed')->ignore($this->lesson)],
+            'duraction' => ['nullable'],
+            'description' => ['nullable']
         ];
     }
 

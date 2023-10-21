@@ -16,7 +16,7 @@ class CourseRepository implements CourseRepositoryInterface
 
     public function getAllCourses()
     {
-        return $this->model->with('modules.lessons.views')->get();
+        return $this->model->with('modules.lessons.views.categories')->get();
     }
 
     public function getCourse(string $identify)
