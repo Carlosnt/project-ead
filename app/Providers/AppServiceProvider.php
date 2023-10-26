@@ -11,8 +11,10 @@ use App\Repositories\CourseRepositoryInterface;
 use App\Repositories\Eloquent\CategoryRepository;
 use App\Repositories\Eloquent\LessonRepository;
 use App\Repositories\Eloquent\ModuleRepository;
+use App\Repositories\Eloquent\SupportRepository;
 use App\Repositories\LessonRepositoryInterface;
 use App\Repositories\ModuleRepositoryInterface;
+use App\Repositories\SupportRepositoryInterface;
 use App\Repositories\UserRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
@@ -53,6 +55,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(          
             LessonRepositoryInterface::class,
             LessonRepository::class,
+        );
+
+        $this->app->singleton(          
+            SupportRepositoryInterface::class,
+            SupportRepository::class,
         );
     }
 

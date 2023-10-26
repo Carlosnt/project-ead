@@ -79,16 +79,16 @@
                     <th class="flex gap-3 px-6 py-4 font-normal text-gray-900">
                     <div class="relative h-10 w-10">
                         <a @click="event => openModal(course.name, course.id)">                           
-                        <img v-if="course.image" :src="course.image"/>
-                        <img v-else :src="course.image"/></a>
-                        <!--<span class="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-green-400 ring ring-white"></span>-->
+                        <img v-if="course.image != null" :src="'../storage/'+course.image"/>
+                        <img v-else :src="'../back/assets/images/no-image.png'"/>
+                    </a>                    
                     </div>
                     <div class="text-sm px-6 py-4">
                         <div class="font-medium text-gray-700">{{ course.name }}</div>                        
                     </div>
                     </th>
                     
-                    <td class="px-6 py-4">12 horas</td>
+                    <td class="px-6 py-4">{{  course.category.name }}</td>
                     <td class="px-6 py-4">{{  course.avaialble ? "Publicado" : "Não publicado"  }}</td>
                     <td class="px-6 py-4">12 horas</td>
                     

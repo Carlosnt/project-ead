@@ -76,7 +76,7 @@
                         <div class="font-medium text-gray-700">{{ mod.name }}</div>                        
                     </div>
                     </th>
-                    <td class="px-6 py-4">4</td>                   
+                    <td class="px-6 py-4">{{ mod.lessons_count}}</td>                   
                     <td class="px-6 py-4">{{ mod.created_at }}</td>
                     <td class="px-6 py-4">
                     <div class="flex justify-end gap-4">

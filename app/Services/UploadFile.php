@@ -19,9 +19,8 @@ class UploadFile
 
     public function removeFile(string $filePath): bool
     {
-        if (Storage::exists($filePath)){ 
-            dd(Storage::exists($filePath));           
-            //return Storage::delete($filePath);
+        if (Storage::exists($filePath)){      
+            return Storage::delete($filePath);
         }
         return false;
     }

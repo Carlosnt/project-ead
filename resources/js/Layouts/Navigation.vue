@@ -42,6 +42,13 @@
                 :is-active="'admin.users.*'" 
                 :link="route('admin.users.index')"                
             />
+
+            <Item 
+                :icon="'TagIcon'" 
+                :description="'Categorias'" 
+                :is-active="['admin.categories.*']" 
+                :link="route('admin.categories.index')"                  
+            />
            
             <Item 
                 :icon="'AcademicCapIcon'" 
@@ -88,7 +95,7 @@ import SubMenuItem from '@/Components/Admin/Molecules/Menu/SubMenu/SubMenuItem.v
 import Item from '@/Components/Admin/Molecules/Menu/Item.vue';
 import { Link } from '@inertiajs/vue3';
 import { ref } from 'vue'
-import { NewspaperIcon, ChevronDownIcon} from '@heroicons/vue/24/outline';
+import { NewspaperIcon, ChevronDownIcon, TagIcon } from '@heroicons/vue/24/outline';
 
 export default {
     components: {

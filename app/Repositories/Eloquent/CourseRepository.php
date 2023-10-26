@@ -32,6 +32,7 @@ class CourseRepository implements CourseRepositoryInterface
                                 $query->where('name', 'LIKE', "%{$filter}%");
                             }
                         })
+                        ->with(['category'])
                         ->get();
 
         return $crouses->toArray();

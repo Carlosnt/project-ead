@@ -79,9 +79,9 @@
                     <th class="flex gap-3 px-6 py-4 font-normal text-gray-900">
                     <div class="relative h-10 w-10">
                         <a @click="event => openModal(admin.name, admin.id)">                           
-                        <img v-if="admin.image" :src="admin.image"/>
-                        <img v-else :src="admin.image"/></a>
-                        <!--<span class="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-green-400 ring ring-white"></span>-->
+                            <img v-if="course.image" :src="'../storage/'+course.image"/>
+                            <img v-else :src="'../back/assets/images/no-image.png'"/>
+                        </a>
                     </div>
                     <div class="text-sm">
                         <div class="font-medium text-gray-700">{{ admin.name }}</div>

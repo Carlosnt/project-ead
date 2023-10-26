@@ -32,6 +32,8 @@ class CategoryRepository implements CategoryRepositoryInterface
                                 $query->where('name', 'LIKE', "%{$filter}%");
                             }
                         })
+                        
+                        ->withCount(['courses'])
                         ->get();
 
         return $crouses->toArray();

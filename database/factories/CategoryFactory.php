@@ -3,18 +3,13 @@
 namespace Database\Factories;
 
 use App\Models\Category;
-use App\Models\Course;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 
-/**
- *
- */
-class CourseFactory extends Factory
+class CategoryFactory extends Factory
 {
-    protected $model = Course::class;
-
+    protected $model = Category::class;
     /**
      * Define the model's default state.
      *
@@ -22,10 +17,11 @@ class CourseFactory extends Factory
      */
     public function definition()
     {
+        $name = $this->faker->unique()->name();
         return [
             'id' => Str::uuid(),
-            'category_id' => Category::factory(),
-            'name' => $this->faker->unique()->name(),            
+            'name' => $this->faker->unique()->name(), 
+            'slug' => Str::slug($name),           
             'description' => $this->faker->sentence(10),
         ];
     }

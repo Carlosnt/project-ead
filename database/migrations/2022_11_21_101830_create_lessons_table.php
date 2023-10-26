@@ -18,7 +18,7 @@ return new class extends Migration
             $table->uuid('module_id')->index();
             $table->string('name')->unique();
             $table->string('url')->unique();
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->string('embed')->unique();
             $table->string('duration')->nullable();
             $table->string('plataform', 20)->nullable();

@@ -18,12 +18,18 @@ class Course extends Model
     protected $keyType = 'uuid';
 
     protected $fillable = [
-        'name',
         'category_id',
+        'name',        
         'avaialble',
+        'free',
         'description',
         'image'
     ];
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 
     public function course()
     {
@@ -33,6 +39,11 @@ class Course extends Model
     public function modules()
     {
         return $this->hasMany(Module::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 
     public function getcreatedAtAttribute()
@@ -45,9 +56,8 @@ class Course extends Model
         return new Attribute(
             function($value){
             if (!empty($value)) {
-                return Storage::url($value);
-            }
-            return asset('back/assets/images/no-image.png');
+                return $value;
+            }            
         });
     }
 }

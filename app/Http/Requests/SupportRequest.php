@@ -27,6 +27,7 @@ class SupportRequest extends FormRequest
     {
         return [
             'lesson' => ['required', 'exists:lessons,id'],
+            'name' => ['required'],
             'status' => ['required', Rule::in(array_keys($support->statusOptions))],
             'description' => ['required', 'min:3', 'max:10000'],
         ];

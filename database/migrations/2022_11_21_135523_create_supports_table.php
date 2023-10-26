@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('supports', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('user_id')->index();
+            $table->string('name');
             $table->uuid('lesson_id')->index();
             $table->enum('status',['P', 'A', 'C'])->default('P');
             $table->text('description');

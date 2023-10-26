@@ -1,21 +1,39 @@
 <?php
 namespace App\Repositories\Eloquent;
 
-use App\Models\Support;
+use App\Models\Support as Model;
+use App\Repositories\SupportRepositoryInterface;
 use App\Repositories\Traits\RepositoryTrait;
 
-class SupportRepository
+class SupportRepository implements SupportRepositoryInterface
 {
     use RepositoryTrait;
 
-    protected $entity;
+    private $model;
 
-    public function __construct(Support $model)
+    public function __construct(Model $model)
     {
-        $this->entity = $model;
+        $this->model = $model;
     }
 
-    public function getMySupports(array $filters = [])
+    public function getByStatus(string $status): array
+    {
+        $lessons = $this->model
+                        ->where('status', $status) 
+                        ->with(['user', 'lesson'])                           
+                        ->get();
+
+        return $lessons->toArray();
+    }
+
+     public function findById(string $id): object
+    {
+        return $this->model
+                        ->with(['user','admin','lesson','replies'])
+                        ->find($id);
+    }
+
+    /*public function getMySupports(array $filters = [])
     {
         $filters['user'] = true;
 
@@ -82,6 +100,6 @@ class SupportRepository
     private function getSupport(string $id)
     {
         return $this->entity->findOrFail($id);
-    }
+    }*/
 
 }

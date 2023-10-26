@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
+use App\Services\UploadFile;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -39,6 +41,28 @@ class ProfileController extends Controller
         $request->user()->save();
 
         return Redirect::route('admin.profile.edit');
+    }
+
+    public function uploadFile(Request $request, UploadFile $uploadFile, $id)
+    {
+        $userUpdate = $request->user();
+        dd($userUpdate);
+      
+        if($request->hasFile('image')){
+            if ($userUpdate->image != null) {             
+                $uploadFile->removeFile($userUpdate->image);
+                $userUpdate->image = '';
+                $userUpdate->save();
+            }
+        }        
+
+        $path = $uploadFile->store($request->image, 'users');
+
+        /*if(!$this->service->update($id, ['image' => $path])){
+            return back()->with('error','Opps!, Erro ao atualizar a foto usuário.');
+        }
+
+        return redirect()->route('admin.profile.index')->with('success','Pronto!, Foto atualizada com sucesso.');*/
     }
 
     /**

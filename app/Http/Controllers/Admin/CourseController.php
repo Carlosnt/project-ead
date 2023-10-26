@@ -66,7 +66,7 @@ class CourseController extends Controller
     public function update(CourseRequest $request, $id)
     {
         $data = $request->all();
-
+       
         if(!$this->service->update($id, $data)){
             return back()->with('error','Opps!, Erro ao atualizar o curso.');
         }
@@ -86,7 +86,7 @@ class CourseController extends Controller
     {
         $course = Course::findOrFail($course->id);
         $uploadFile = new UploadFile(); 
-        if ($course) {             
+        if ($course) {      
             $uploadFile->removeFile($course->image);
         }
        
@@ -102,8 +102,8 @@ class CourseController extends Controller
         $courseUpdate = $this->service->findById($id);
         if(!empty($request->hasFile('image'))){
             if ($courseUpdate && $courseUpdate->image) {       
-                if(Storage::exists($courseUpdate->image)){
-                    Storage::delete($courseUpdate->image);
+                if(Storage::exists($courseUpdate->image)){                   
+                    $uploadFile->removeFile($courseUpdate->image);                    
                 }   
             }
         }        

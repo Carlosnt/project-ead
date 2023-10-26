@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Course;
 use App\Models\Module;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 
@@ -18,8 +19,9 @@ class ModuleFactory extends Factory
     public function definition()
     {
         return [
+            'id' => Str::uuid(),
             'course_id' => Course::factory(),
-            'name' => $this->faker->name(),
+            'name' => $this->faker->unique()->name(),
         ];
     }
 }

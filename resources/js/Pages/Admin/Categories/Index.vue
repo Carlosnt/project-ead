@@ -81,7 +81,7 @@
                         <div class="font-medium text-gray-700">{{ category.name }}</div>                        
                     </div>
                     </th>
-                    <td class="px-6 py-4">4</td>                   
+                    <td class="px-6 py-4">{{ category.courses_count }}</td>                   
                     <td class="px-6 py-4">{{ category.created_at }}</td>
                     <td class="px-6 py-4">
                     <div class="flex justify-end gap-4">

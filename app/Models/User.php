@@ -63,6 +63,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Support::class);
     }
+
+    public function courses()
+    {
+        return $this->hasMany(Course::class);
+    }
     
     public function views()
     {
@@ -74,9 +79,16 @@ class User extends Authenticatable
         });
     }
 
-    public function getcreatedAtAttribute()
+    protected function createdAt(): Attribute
     {
-        return Carbon::make($this->attributes['created_at'])->format('d/m/Y');
+        return Attribute::make(
+            get: fn ($value) => Carbon::make($value)->format('d/m/Y'),
+        );
+    }
+
+    protected function getImageUrlAttritube()
+    {
+        return $this->attributes['image'] ? Storage::url($$this->attributes['image']) : null;
     }
 
     public function image(): Attribute
@@ -84,9 +96,8 @@ class User extends Authenticatable
         return new Attribute(
             function($value){
             if (!empty($value)) {
-                return Storage::url($value);
-            }
-            return asset('back/assets/images/no-image.png');
+                return $value;
+            }            
         });
     }
         

@@ -22,10 +22,12 @@ class LessonFactory extends Factory
     {
         $name = $this->faker->unique()->name();
         return [
+            'id' => Str::uuid(),
             'module_id' => Module::factory(),
             'name' => $name,
             'url' => Str::slug($name),
-            'embed' => Str::random(),
+            'embed' => $this->faker->unique()->name(),
+            'description' => $this->faker->sentence(10),
         ];
     }
 }

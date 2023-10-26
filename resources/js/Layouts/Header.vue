@@ -21,12 +21,19 @@
               role="button"
               data-te-dropdown-toggle-ref
               aria-expanded="false">
-              <img
-                :src="$page.props.auth.user.image"
+              <img v-if="$page.props.auth.user.image"
+                :src="auth.user.image"
                 class="rounded-full"
                 style="height: 22px; width: 22px"
                 alt="Avatar"
                 loading="lazy" />
+               
+                <img v-else
+                :src="'../back/assets/images/no-image.png'"
+                class="rounded-full"
+                style="height: 22px; width: 22px"
+                alt="Avatar"
+                loading="lazy" />                
             </a>            
           </li>
                     <button @click="dropdownOpen = ! dropdownOpen" class="relative block overflow-hidden">

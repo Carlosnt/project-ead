@@ -42,57 +42,56 @@
 
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6 border-b border-gray-200">
-                <form @submit.prevent="$event => form.patch(route('admin.users.update', user))">
-                    
-                    <div class="border-b border-gray-900/10 pb-12">
-                        <h2 class="text-base font-semibold leading-7 text-gray-900">Informações de edição</h2>
-                        <p class="mt-1 text-sm leading-6 text-gray-600">Aqui você edita as informações que lhe dão acesso ao sistema.</p>
-
-                        <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                        <div class="sm:col-span-10">
-                            <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Nome</label>
-                            <div class="mt-2">
-                            <input type="text" id="name" v-model="form.name" autocomplete="Seu nome aqui" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                            <InputError :message="form.errors.name" class="mt-2"></InputError>
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-10">
-                            <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email</label>
-                            <div class="mt-2">
-                            <input type="text" id="email" v-model="form.email" autocomplete="Seu email aqui" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                            <InputError :message="form.errors.email" class="mt-2"></InputError>
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-10">
-                            <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Senha</label>
-                            <div class="mt-2">
-                            <input type="text" id="password" v-model="form.password" autocomplete="Sua senha aqui" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                            <InputError :message="form.errors.password" class="mt-2"></InputError>
-                            </div>
-                        </div>
-
-                        <!--<div class="sm:col-span-3">
-                            <label for="country" class="block text-sm font-medium leading-6 text-gray-900">Country</label>
-                            <div class="mt-2">
-                            <select id="country" name="country" autocomplete="country-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
-                                <option>United States</option>
-                                <option>Canada</option>
-                                <option>Mexico</option>
-                            </select>
-                            </div>
-                        </div>-->
+                <div class="grid grid-cols-2 gap-2">
+                    <form @submit.prevent="$event => form.patch(route('admin.users.update', user))">
                         
-                        </div>
-                    </div>                  
+                        <div class="border-b border-gray-900/10 pb-12">
+                            <h2 class="text-base font-semibold leading-7 text-gray-900">Informações de edição</h2>
+                            <p class="mt-1 text-sm leading-6 text-gray-600">Aqui você edita as informações que lhe dão acesso ao sistema.</p>
 
-                    <div class="mt-6 flex items-center justify-end gap-x-6">                  
-                        <PrimaryButton :disabled="form.processing">
-                        <i class="fa-solid fa-save"></i> Salvar
-                    </PrimaryButton>
+                            <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                            <div class="sm:col-span-10">
+                                <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Nome</label>
+                                <div class="mt-2">
+                                <input type="text" id="name" v-model="form.name" autocomplete="Seu nome aqui" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.name" class="mt-2"></InputError>
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-10">
+                                <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email</label>
+                                <div class="mt-2">
+                                <input type="text" id="email" v-model="form.email" autocomplete="Seu email aqui" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.email" class="mt-2"></InputError>
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-10">
+                                <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Senha</label>
+                                <div class="mt-2">
+                                <input type="text" id="password" v-model="form.password" autocomplete="Sua senha aqui" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.password" class="mt-2"></InputError>
+                                </div>
+                            </div>
+                            </div>
+                        </div>                  
+
+                        <div class="mt-6 flex items-center justify-end gap-x-6">                  
+                            <PrimaryButton :disabled="form.processing">
+                            <i class="fa-solid fa-save"></i> Salvar
+                        </PrimaryButton>
+                        </div>
+                    </form>
+
+                    <div class="flex items-center justify-center">
+                        <h2 class="text-base font-semibold leading-7 text-gray-900">Click na imagem para alterar a mesma</h2>
+                       
+                            <a @click="event => openModal(user.name, user.id)" class="cursor-pointer items-center">                           
+                            <img class="h-48 w-48 rounded-full" v-if="user.image" :src="user.image"/>
+                            <img class="h-48 w-48 rounded-full" v-else :src="user.image"/></a>     
+                                    
                     </div>
-                </form>
+                </div>
             </div>
         </div>
 

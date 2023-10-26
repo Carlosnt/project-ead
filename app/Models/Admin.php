@@ -83,9 +83,8 @@ class Admin extends Authenticatable
         return new Attribute(
             function($value){
             if (!empty($value)) {
-                return Storage::url($value);
+                return $value;
             }
-            return asset('back/assets/images/no-image.png');
         });
     }
         

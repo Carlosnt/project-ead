@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('modules', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('course_id')->index();
-            $table->string('name');
+            $table->string('name')->unique();
 
             $table->foreign('course_id')
             ->references('id')

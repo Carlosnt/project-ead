@@ -21,6 +21,7 @@ class ModuleRepository implements ModuleRepositoryInterface
                                 $query->orWhere('name', 'LIKE', "%{$filter}%");
                             }
                         })
+                        ->withCount('lessons')
                         ->where('course_id', $courseId)
                         ->get();
 

@@ -23,6 +23,7 @@ class CategoryController extends Controller
         $categories = $this->service->getAll(
             filter: $request->filter ?? ""
         );
+        
         return Inertia::render('Admin/Categories/Index', [
             'categories' => $categories,
         ]);

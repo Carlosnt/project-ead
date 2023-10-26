@@ -31,6 +31,7 @@ Route::group(['as' => 'admin.','prefix'=> 'admin'], function(){
 
         Route::resource('/supports', SupportController::class);
 
+        Route::post('/profile/{id}/update-image', [ProfileController::class, 'uploadFile'])->name('profile.update.image');
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile/destroy', [ProfileController::class, 'destroy'])->name('profile.destroy');
