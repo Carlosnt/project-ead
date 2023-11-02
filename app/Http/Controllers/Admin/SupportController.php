@@ -16,7 +16,7 @@ class SupportController extends Controller
     {
         $this->service = $service;
     }
-    
+
     public function index(Request $request)
     {
         $supports = $this->service->getSupports(
@@ -43,12 +43,12 @@ class SupportController extends Controller
     public function destroy(Support $support)
     {
         $support = Support::findOrFail($support->id);
-       
+
         if($support->destroy($support->id)){
             return redirect()->route('admin.supports.index')->with('success','Pronto!, Suporte deletado com sucesso.');
         }else{
             return redirect()->route('admin.supports.index')->with('error','Opps!, Erro ao deletar o suporte.');
         }
     }
-    
+
 }

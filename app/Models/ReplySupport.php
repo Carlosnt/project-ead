@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Models\Traits\UuidTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use mysql_xdevapi\Table;
 
 class ReplySupport extends Model
 {
@@ -37,8 +36,5 @@ class ReplySupport extends Model
         return $this->belongsTo(Admin::class);
     }
 
-    public function replies()
-    {
-        return $this->hasMany(ReplySupport::class);
-    }
+
 }

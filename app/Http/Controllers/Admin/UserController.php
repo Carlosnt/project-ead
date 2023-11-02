@@ -18,12 +18,13 @@ class UserController extends Controller
     {
         $this->service = $service;
     }
-    
+
     public function index(Request $request)
     {
         $users = $this->service->getAll(
             filter: $request->filter ?? ""
         );
+        dd($users);
         return Inertia::render('Admin/Users/Index', [
             'users' => $users,
         ]);
@@ -64,7 +65,7 @@ class UserController extends Controller
         }
 
         $data = $request->only(['name', 'email']);
-    
+
 
         if(!$this->service->update($id, $data)){
             return back()->with('error','Opps!, Erro ao atualizar o usuário.');
@@ -84,11 +85,11 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user = User::findOrFail($user->id);
-        $uploadFile = new UploadFile(); 
-        if ($user) {             
+        $uploadFile = new UploadFile();
+        if ($user) {
             $uploadFile->removeFile($user->image);
         }
-       
+
         if($user->destroy($user->id)){
             return redirect()->route('admin.users.index')->with('success','Pronto!, Usuário deletado com sucesso.');
         }else{
@@ -99,14 +100,14 @@ class UserController extends Controller
     public function uploadFile(Request $request, UploadFile $uploadFile, $id)
     {
         $userUpdate = User::FindOrFail($id);
-      
+
         if($request->hasFile('image')){
-            if ($userUpdate->image != null) {             
+            if ($userUpdate->image != null) {
                 $uploadFile->removeFile($userUpdate->image);
                 $userUpdate->image = '';
                 $userUpdate->save();
             }
-        }        
+        }
 
         $path = $uploadFile->store($request->image, 'users');
 
@@ -127,5 +128,5 @@ class UserController extends Controller
             'user' => $user,
         ]);
     }
-    
+
 }

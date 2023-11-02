@@ -1,9 +1,7 @@
 <template>
     <Head title="Cursos" />
 
-    <AuthenticatedLayout>        
-
-    
+    <AuthenticatedLayout>
             <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-3">
                 <li class="inline-flex items-center">
@@ -12,8 +10,8 @@
                     Home
                 </a>
                 </li>
-                
-               
+
+
                 <li aria-current="page">
                 <div class="flex items-center">
                     <svg class="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
@@ -26,80 +24,78 @@
         </nav>
 
         <div class="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
-            
+
             <h3 class="text-lg leading-6 text-gray-900">Lista de Cursos</h3>
 
-            
             <div class="py-3 float-right">
                 <div class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                     <Link :href="route('admin.courses.create')">
                         <span class="flex items-center gap-x-3 px-1 py-0.5">
-                            <PlusIcon class="w-5 h-5 shrink-0"/> 
+                            <PlusIcon class="w-5 h-5 shrink-0"/>
                             Novo Curso
                         </span>
                     </Link>
-                    
+
                 </div>
-            </div>           
+            </div>
         </div>
        <div class="w-full rounded-lg bg-white mb-2">
         <form v-on:submit.prevent="searchForm()" class="w-full grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                 <div class="p-3 mt-3 sm:col-span-4 sm:col-start-1">
-                    
+
                     <input id="filter" v-model="search.filter" placeholder="Pesquisar" class="block w-full w-3/4 rounded-md form-input focus:border-indigo-600"
                      type="text" />
                 </div>
-        
-            
+
                 <div class="p-3 flex flex-col self-center items-center mt-3 sm:col-span-2 ">
                     <PrimaryButton :disabled="search.processing">
                         <i class="fa fa-search">  Pesquisar</i>
                     </PrimaryButton>
-                    
-                </div>  
-            </form> 
-            </div> 
+
+                </div>
+            </form>
+            </div>
 
         <div class="overflow-hidden rounded-lg border border-gray-200 shadow-md">
-            
+
             <table class="w-full border-collapse bg-white text-left text-sm text-gray-500">
                 <thead class="bg-gray-50">
                 <tr>
                     <th scope="col" class="px-6 py-4 font-medium text-gray-900">Nome</th>
                     <th scope="col" class="px-6 py-4 font-medium text-gray-900">Categoria</th>
                     <th scope="col" class="px-6 py-4 font-medium text-gray-900">Status</th>
-                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Duração</th>                  
+                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Duração</th>
                     <th scope="col" class="px-6 py-4 font-medium text-gray-900"></th>
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 border-t border-gray-100">
-                    
+
                 <tr v-for="course in courses" :key="course.id" class="hover:bg-gray-50">
-                    
+
                     <th class="flex gap-3 px-6 py-4 font-normal text-gray-900">
                     <div class="relative h-10 w-10">
-                        <a @click="event => openModal(course.name, course.id)">                           
-                        <img v-if="course.image != null" :src="'../storage/'+course.image"/>
+                        <a @click="event => openModal(course.name, course.id)">
+                        <img v-if="course.image != null" :src="course.photo"/>
                         <img v-else :src="'../back/assets/images/no-image.png'"/>
-                    </a>                    
+                    </a>
                     </div>
                     <div class="text-sm px-6 py-4">
-                        <div class="font-medium text-gray-700">{{ course.name }}</div>                        
+                        <div class="font-medium text-gray-700">{{ course.name }}</div>
                     </div>
                     </th>
-                    
+
                     <td class="px-6 py-4">{{  course.category.name }}</td>
                     <td class="px-6 py-4">{{  course.avaialble ? "Publicado" : "Não publicado"  }}</td>
                     <td class="px-6 py-4">12 horas</td>
-                    
+
                     <td class="px-6 py-4">
                     <div class="flex justify-end gap-4">
                         <Link x-data="{ tooltip: 'Detalhes' }" :href="route('admin.courses.show', course.id)">
-                            <InformationCircleIcon class="h-6 w-6 text-gray-500" />          
+                            <InformationCircleIcon class="h-6 w-6 text-gray-500" />
                         </Link>
 
                         <Link x-data="{ tooltip: 'Adicionar modulos' }" :href="route('admin.modules.index', course.id)">
-                            <Bars3Icon class="h-6 w-6 text-gray-500" />               
+                            <Bars3Icon class="h-6 w-6 text-gray-500" />
                         </Link>
 
                         <Link x-data="{ tooltip: 'Editar' }" :href="route('admin.courses.edit', course.id)">
@@ -109,13 +105,13 @@
                         <Link x-data="{ tooltip: 'Deletar' }" @click="event => deleteCourse(course.id, course.name)">
                             <TrashIcon class="h-6 w-6 text-gray-500" />
                         </Link>
-                        
+
                     </div>
                     </td>
                 </tr>
                 </tbody>
             </table>
-           
+
         </div>
             <Modal :show="modal" @close="closeModal">
                 <form v-on:submit.prevent="submitForm()">
@@ -126,8 +122,8 @@
                     @input="form.image = $event.target.files[0]" type="file" />
                     <InputError :message="form.errors.image" class="mt-2"></InputError>
                 </div>
-        
-            
+
+
                 <div class="p-3 flex justify-around">
                     <PrimaryButton :disabled="form.processing" @click="save">
                         <i class="fa fa-save">  Salvar</i>
@@ -137,9 +133,9 @@
                             <i class="fa fa-plus text-red-900"> Cancelar</i>
                         </SecondarygButton>
                     </div>
-                </div>  
-            </form>    
-            
+                </div>
+            </form>
+
         </Modal>
 
     </AuthenticatedLayout>
@@ -202,7 +198,7 @@ const submitForm = () => {
     form.post(route('admin.courses.update.image', id.value), {
         forceFormData: true,
         onSuccess: () => {message('Foto atualizada com sucesso!')},
-       
+
     })
 };
 

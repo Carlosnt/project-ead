@@ -21,6 +21,7 @@ class User extends Authenticatable
     public $incrementing = false;
 
     protected $keyType = 'uuid';
+    protected $appends = ['photo'];
 
     /**
      * The attributes that are mass assignable.
@@ -32,6 +33,7 @@ class User extends Authenticatable
         'email',
         'password',
         'image',
+        'urlimage',
     ];
 
     /**
@@ -68,37 +70,35 @@ class User extends Authenticatable
     {
         return $this->hasMany(Course::class);
     }
-    
+
     public function views()
     {
         return $this->hasMany(View::class)
-        ->where(function ($query){
-            if(auth()->check()){
-                return $query->where('user_id', auth()->user()->id);
-            }
-        });
+            ->where(function ($query) {
+                if (auth()->check()) {
+                    return $query->where('user_id', auth()->user()->id);
+                }
+            });
     }
 
     protected function createdAt(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => Carbon::make($value)->format('d/m/Y'),
+            get: fn($value) => Carbon::make($value)->format('d/m/Y'),
         );
     }
 
-    protected function getImageUrlAttritube()
-    {
-        return $this->attributes['image'] ? Storage::url($$this->attributes['image']) : null;
-    }
+     protected function photo(): Attribute
+     {
+         return new Attribute(
+             get: function () {
+                 if (!empty($this->attributes['image'])) {
+                     return Storage::url($this->attributes['image']);
+                 }
 
-    public function image(): Attribute
-    {
-        return new Attribute(
-            function($value){
-            if (!empty($value)) {
-                return $value;
-            }            
-        });
-    }
-        
+                 return asset('back/assets/images/no-image.png');
+             }
+         );
+     }
+
 }
