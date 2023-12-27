@@ -29,14 +29,22 @@ class LessonController extends Controller
         if (!$module = $this->repositoryModule->findById($moduleId))
         return back();
 
-        $data = $this->repository->getAllByModuleId(
+        $lessons = $this->repository->getAllByModuleId(
             moduleId: $moduleId,
-            filter: $request->filter ?? ''
+            filter: $request->filter ?? '',
+            page: (int) $request->get('page', 1),
         );
-        $lessons = converItemsOfArrayToObject($data);
+
+        $array = new \stdClass();
+        $array->data =  $lessons->links();
+        $ar = (object) $array->data->getData();
+        $array->getData =  $ar;
+        $array->getLinks = $array->getData->paginator;
+        $array->setLinks = $array->getLinks;
+        $data = (object) $array->setLinks;
 
         return Inertia::render('Admin/Courses/Lessons/Index-lessons', [
-            'lessons' => $lessons,
+            'lessons' => $data,
             'module' => $module
         ]);
     }
@@ -55,7 +63,7 @@ class LessonController extends Controller
     {
         if (!$this->repositoryModule->findById($moduleId))
         return back();
-       
+
         $lesson = $this->repository->createByModule($moduleId, $request->all());
 
         if(!$lesson){
@@ -63,7 +71,7 @@ class LessonController extends Controller
         }
 
         return redirect()->route('admin.lessons.index', $moduleId);
-        
+
     }
 
     public function edit($moduleId, $id)
@@ -72,7 +80,7 @@ class LessonController extends Controller
             return back();
 
         if (!$lesson = $this->repository->findById($id))
-            return back();   
+            return back();
 
         return Inertia::render('Admin/Courses/Lessons/Edit', [
             'module' => $module,
@@ -84,13 +92,13 @@ class LessonController extends Controller
     {
         if (!$this->repositoryModule->findById($moduleId))
         return back();
-    
+
         if(!$this->repository->update($id, $request->all())){
             return back()->with('error','Opps!, Erro ao atualizar a aula.');
         }
 
         return redirect()->route('admin.lessons.index', $moduleId)->with('success','Pronto!, Aula atualizada com sucesso.');
-        
+
     }
 
     public function show($moduleId, $id)
@@ -99,7 +107,7 @@ class LessonController extends Controller
         return back();
 
         if (!$lesson = $this->repository->findById($id))
-            return back();   
+            return back();
 
         return Inertia::render('Admin/Courses/Lessons/Show', [
             'lesson' => $lesson,
@@ -115,5 +123,5 @@ class LessonController extends Controller
             return redirect()->route('admin.lessons.index', $moduleId)->with('error','Opps!, Erro ao deletar a aula.');
         }
     }
-    
+
 }

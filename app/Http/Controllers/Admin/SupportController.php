@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enum\SupportEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Support;
 use App\Services\SupportService;
@@ -20,12 +21,24 @@ class SupportController extends Controller
     public function index(Request $request)
     {
         $supports = $this->service->getSupports(
-            status: $request->get('status', 'P')
+            status: $request->get('status') ? $request->get('status') : $request->get('status', 'P'),
+            page: (int) $request->get('page', 1),
         );
 
+        $statusOptions = converItemsOfArrayToObject(SupportEnum::cases());
+        $array = new \stdClass();
+        $array->data =  $supports->links();
+        $ar = (object) $array->data->getData();
+        $array->getData =  $ar;
+        $array->getLinks = $array->getData->paginator;
+        $array->setLinks = $array->getLinks;
+        $data = (object) $array->setLinks;
+
         return Inertia::render('Admin/Supports/Index', [
-            'supports' => $supports,
+            'supports' => $data,
+            'statusOptions'=> $statusOptions
         ]);
+
     }
 
     public function show($id)

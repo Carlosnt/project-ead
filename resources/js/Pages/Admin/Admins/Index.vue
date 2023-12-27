@@ -1,9 +1,9 @@
 <template>
     <Head title="Usuários" />
 
-    <AuthenticatedLayout>        
+    <AuthenticatedLayout>
 
-    
+
             <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-3">
                 <li class="inline-flex items-center">
@@ -12,8 +12,8 @@
                     Home
                 </a>
                 </li>
-                
-               
+
+
                 <li aria-current="page">
                 <div class="flex items-center">
                     <svg class="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
@@ -26,42 +26,42 @@
         </nav>
 
         <div class="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
-            
+
             <h3 class="text-lg leading-6 text-gray-900">Lista de Admins</h3>
 
-            
+
             <div class="py-3 float-right">
                 <div class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                     <Link :href="route('admin.admins.create')">
                         <span class="flex items-center gap-x-3 px-1 py-0.5">
-                            <PlusIcon class="w-5 h-5 shrink-0"/> 
+                            <PlusIcon class="w-5 h-5 shrink-0"/>
                             Novo Admin
                         </span>
                     </Link>
-                    
+
                 </div>
-            </div>           
+            </div>
         </div>
        <div class="w-full rounded-lg bg-white mb-2">
         <form v-on:submit.prevent="searchForm()" class="w-full grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                 <div class="p-3 mt-3 sm:col-span-4 sm:col-start-1">
-                    
+
                     <input id="filter" v-model="search.filter" placeholder="Pesquisar" class="block w-full w-3/4 rounded-md form-input focus:border-indigo-600"
                      type="text" />
                 </div>
-        
-            
+
+
                 <div class="p-3 flex flex-col self-center items-center mt-3 sm:col-span-2 ">
                     <PrimaryButton :disabled="search.processing">
                         <i class="fa fa-search">  Pesquisar</i>
                     </PrimaryButton>
-                    
-                </div>  
-            </form> 
-            </div> 
+
+                </div>
+            </form>
+            </div>
 
         <div class="overflow-hidden rounded-lg border border-gray-200 shadow-md">
-            
+
             <table class="w-full border-collapse bg-white text-left text-sm text-gray-500">
                 <thead class="bg-gray-50">
                 <tr>
@@ -73,13 +73,13 @@
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 border-t border-gray-100">
-                    
+
                 <tr v-for="admin in admins" :key="admin.id" class="hover:bg-gray-50">
-                    
+
                     <th class="flex gap-3 px-6 py-4 font-normal text-gray-900">
-                    <div class="relative h-10 w-10">
-                        <a @click="event => openModal(admin.name, admin.id)">                           
-                            <img v-if="course.image" :src="'../storage/'+course.image"/>
+                    <div class="relative h-10 w-10 cursor-pointer">
+                        <a @click="event => openModal(admin.name, admin.id)">
+                            <img v-if="admin.image != null" :src="admin.photo"/>
                             <img v-else :src="'../back/assets/images/no-image.png'"/>
                         </a>
                     </div>
@@ -97,26 +97,26 @@
                         Active
                     </span>
                     </td>
-                   
+
                     <td class="px-6 py-4">{{ admin.created_at }}</td>
                     <td class="px-6 py-4">
                     <div class="flex justify-end gap-4">
                         <Link x-data="{ tooltip: 'Detalhes' }" :href="route('admin.admins.show', admin.id)">
-                            <svg 
-                                class="w-6 h-6" 
+                            <svg
+                                class="w-6 h-6"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
-                                fill="none" 
+                                fill="none"
                                 viewBox="0 0 24 24"
                                 stroke-width="1.5"
                                 x-tooltip="tooltip">
-                                <path 
-                                stroke="currentColor" 
-                                stroke-linecap="round" 
-                                stroke-linejoin="round" 
-                                stroke-width="2" 
+                                <path
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
                                 d="M8 9h2v5m-2 0h4M9.408 5.5h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                            </svg>                        
+                            </svg>
                         </Link>
 
                         <Link x-data="{ tooltip: 'Editar' }" :href="route('admin.admins.edit', admin.id)">
@@ -138,24 +138,24 @@
 
                         <Link x-data="{ tooltip: 'Deletar' }" @click="event => deleteDepartment(admin.id, admin.name)">
                             <svg class="w-6 h-6"
-                            aria-hidden="true" 
-                            xmlns="http://www.w3.org/2000/svg" 
-                            fill="none" 
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
                             viewBox="0 0 18 20">
                                 <path stroke="currentColor"
-                                 stroke-linecap="round" 
-                                 stroke-linejoin="round" 
-                                 stroke-width="1.5" 
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 stroke-width="1.5"
                                  d="M1 5h16M7 8v8m4-8v8M7 1h4a1 1 0 0 1 1 1v3H6V2a1 1 0 0 1 1-1ZM3 5h12v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5Z"/>
                             </svg>
                         </Link>
-                        
+
                     </div>
                     </td>
                 </tr>
                 </tbody>
             </table>
-           
+
         </div>
             <Modal :show="modal" @close="closeModal">
                 <form v-on:submit.prevent="submitForm()">
@@ -166,8 +166,8 @@
                     @input="form.image = $event.target.files[0]" type="file" />
                     <InputError :message="form.errors.image" class="mt-2"></InputError>
                 </div>
-        
-            
+
+
                 <div class="p-3 flex justify-around">
                     <PrimaryButton :disabled="form.processing" @click="save">
                         <i class="fa fa-save">  Salvar</i>
@@ -177,9 +177,9 @@
                             <i class="fa fa-plus text-red-900"> Cancelar</i>
                         </SecondarygButton>
                     </div>
-                </div>  
-            </form>    
-            
+                </div>
+            </form>
+
         </Modal>
 
     </AuthenticatedLayout>
@@ -242,7 +242,7 @@ const submitForm = () => {
     form.post(route('admin.admins.update.image', id.value), {
         forceFormData: true,
         onSuccess: () => {message('Foto atualizada com sucesso!')},
-       
+
     })
 };
 

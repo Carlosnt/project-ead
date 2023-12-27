@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Services;
 
@@ -13,11 +13,12 @@ class UserService
         $this->repository = $repository;
     }
 
-    public function getAll(string $filter = ''): array
+    public function getAll(string $filter = '', int $page = 1)
     {
-        $users = $this->repository->getAll($filter);
-
-        return converItemsOfArrayToObject($users);
+        return $this->repository->getAll(
+            filter: $filter,
+            page: $page
+        );
     }
 
     public function findById(string $id): object|null

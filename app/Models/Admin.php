@@ -20,6 +20,7 @@ class Admin extends Authenticatable
     public $incrementing = false;
 
     protected $keyType = 'uuid';
+    protected $appends = ['photo'];
 
     /**
      * The attributes that are mass assignable.
@@ -62,7 +63,7 @@ class Admin extends Authenticatable
     {
         return $this->hasMany(Support::class);
     }
-    
+
     public function views()
     {
         return $this->hasMany(View::class)
@@ -73,19 +74,23 @@ class Admin extends Authenticatable
         });
     }
 
-    public function getcreatedAtAttribute()
+    protected function createdAt(): Attribute
     {
-        return Carbon::make($this->attributes['created_at'])->format('d/m/Y');
+        return Attribute::make(
+            get: fn($value) => Carbon::make($value)->format('d/m/Y'),
+        );
     }
 
-    public function image(): Attribute
+    protected function photo(): Attribute
     {
         return new Attribute(
-            function($value){
-            if (!empty($value)) {
-                return $value;
+            get: function () {
+                if (!empty($this->attributes['image'])) {
+                    return Storage::url($this->attributes['image']);
+                }
+                return asset('back/assets/images/no-image.png');
             }
-        });
+        );
     }
-        
+
 }

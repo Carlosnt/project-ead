@@ -2,6 +2,8 @@
 namespace App\Repositories\Eloquent;
 
 use App\Models\Support as Model;
+use App\Repositories\Presenters\PaginationPresenter;
+use App\Repositories\PaginationInterface;
 use App\Repositories\SupportRepositoryInterface;
 use App\Repositories\Traits\RepositoryTrait;
 
@@ -16,20 +18,20 @@ class SupportRepository implements SupportRepositoryInterface
         $this->model = $model;
     }
 
-    public function getByStatus(string $status): array
+    public function getByStatus(string $status, int $page): PaginationInterface
     {
-        $lessons = $this->model
-                        ->where('status', $status) 
-                        ->with(['user', 'lesson'])                           
-                        ->get();
+        $supports = $this->model
+                        ->where('status', $status)
+                        ->with(['user', 'lesson'])
+                        ->paginate()->withQueryString();
 
-        return $lessons->toArray();
+        return new PaginationPresenter($supports);
     }
 
      public function findById(string $id): object
     {
         return $this->model
-                        ->with(['user','admin','lesson','replies'])
+                        ->with(['user','admin','lesson','replies.user','replies.admin'])
                         ->find($id);
     }
 

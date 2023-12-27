@@ -1,9 +1,11 @@
-<?php 
+<?php
 
 namespace App\Repositories\Eloquent;
 
 use App\Models\Category as Model;
 use App\Repositories\CategoryRepositoryInterface;
+use App\Repositories\PaginationInterface;
+use App\Repositories\Presenters\PaginationPresenter;
 
 class CategoryRepository implements CategoryRepositoryInterface
 {
@@ -24,19 +26,18 @@ class CategoryRepository implements CategoryRepositoryInterface
         return $this->model->with('modules.lessons')->findOrFail($identify);
     }
 
-    public function getAll(string $filter = ''): array
+    public function getAll(string $filter = '', int $page): PaginationInterface
     {
-        $crouses = $this->model
+        $categoreis = $this->model
                         ->where(function ($query) use ($filter) {
                             if ($filter) {
                                 $query->where('name', 'LIKE', "%{$filter}%");
                             }
                         })
-                        
-                        ->withCount(['courses'])
-                        ->get();
 
-        return $crouses->toArray();
+                        ->withCount(['courses'])
+                        ->paginate()->withQueryString();
+        return new PaginationPresenter($categoreis);
     }
 
     public function findById(string $id): object

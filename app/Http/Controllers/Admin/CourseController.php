@@ -21,14 +21,24 @@ class CourseController extends Controller
     {
         $this->service = $service;
     }
-    
+
     public function index(Request $request)
     {
         $courses = $this->service->getAll(
-            filter: $request->filter ?? ""
+            filter: $request->filter ?? "",
+            page: (int) $request->get('page', 1),
         );
+
+        $array = new \stdClass();
+        $array->data =  $courses->links();
+        $ar = (object) $array->data->getData();
+        $array->getData =  $ar;
+        $array->getLinks = $array->getData->paginator;
+        $array->setLinks = $array->getLinks;
+        $data = (object) $array->setLinks;
+
         return Inertia::render('Admin/Courses/Index', [
-            'courses' => $courses,
+            'courses' => $data,
         ]);
     }
 
@@ -66,7 +76,7 @@ class CourseController extends Controller
     public function update(CourseRequest $request, $id)
     {
         $data = $request->all();
-       
+
         if(!$this->service->update($id, $data)){
             return back()->with('error','Opps!, Erro ao atualizar o curso.');
         }
@@ -85,11 +95,11 @@ class CourseController extends Controller
     public function destroy(Course $course)
     {
         $course = Course::findOrFail($course->id);
-        $uploadFile = new UploadFile(); 
-        if ($course) {      
+        $uploadFile = new UploadFile();
+        if ($course) {
             $uploadFile->removeFile($course->image);
         }
-       
+
         if($course->destroy($course->id)){
             return redirect()->route('admin.courses.index')->with('success','Pronto!, Curso deletado com sucesso.');
         }else{
@@ -101,12 +111,12 @@ class CourseController extends Controller
     {
         $courseUpdate = $this->service->findById($id);
         if(!empty($request->hasFile('image'))){
-            if ($courseUpdate && $courseUpdate->image) {       
-                if(Storage::exists($courseUpdate->image)){                   
-                    $uploadFile->removeFile($courseUpdate->image);                    
-                }   
+            if ($courseUpdate && $courseUpdate->image) {
+                if(Storage::exists($courseUpdate->image)){
+                    $uploadFile->removeFile($courseUpdate->image);
+                }
             }
-        }        
+        }
 
         $path = $uploadFile->store($request->image, 'courses');
 
@@ -116,5 +126,5 @@ class CourseController extends Controller
 
         return redirect()->route('admin.courses.index')->with('success','Pronto!, Foto atualizada com sucesso.');
     }
-    
+
 }

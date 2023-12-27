@@ -1,8 +1,10 @@
-<?php 
+<?php
 
 namespace App\Repositories\Eloquent;
 
 use App\Models\User as Model;
+use App\Repositories\PaginationInterface;
+use App\Repositories\Presenters\PaginationPresenter;
 use App\Repositories\UserRepositoryInterface;
 
 class UserRepository implements UserRepositoryInterface
@@ -14,7 +16,7 @@ class UserRepository implements UserRepositoryInterface
         $this->model = $model;
     }
 
-    public function getAll(string $filter = ''): array
+    public function getAll(string $filter = '', int $page): PaginationInterface
     {
         $users = $this->model
                         ->where(function ($query) use ($filter) {
@@ -23,9 +25,9 @@ class UserRepository implements UserRepositoryInterface
                                 $query->orWhere('name', 'LIKE', "%{$filter}%");
                             }
                         })
-                        ->get();
+                        ->paginate()->withQueryString();
 
-        return $users->toArray();
+        return new PaginationPresenter($users);
     }
 
     public function findById(string $id): object

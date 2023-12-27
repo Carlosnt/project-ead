@@ -9,6 +9,7 @@ use App\Services\UploadFile;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use function Symfony\Component\Translation\t;
 
 class UserController extends Controller
 {
@@ -22,11 +23,20 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $users = $this->service->getAll(
-            filter: $request->filter ?? ""
+            filter: $request->filter ?? "",
+            page: (int) $request->get('page', 1),
         );
-        dd($users);
+
+        $array = new \stdClass();
+        $array->data =  $users->links();
+        $ar = (object) $array->data->getData();
+        $array->getData =  $ar;
+        $array->getLinks = $array->getData->paginator;
+        $array->setLinks = $array->getLinks;
+        $data = (object) $array->setLinks;
+
         return Inertia::render('Admin/Users/Index', [
-            'users' => $users,
+            'users' => $data
         ]);
     }
 

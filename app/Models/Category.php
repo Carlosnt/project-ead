@@ -26,7 +26,7 @@ class Category extends Model
     public function name(): Attribute
     {
         return Attribute::make(
-            set: fn(string $value) => [                
+            set: fn(string $value) => [
                 'name' => $value,
                 'slug' => $this->normalizeSlug($value),
             ]
@@ -42,7 +42,7 @@ class Category extends Model
         ->when($this->id, function($query){
             $query->where('id', '!=', $this->id);
         })->count();
-       
+
         if($count > 0){
             return $slug.'-'. ++$count;
         }
@@ -50,9 +50,11 @@ class Category extends Model
         return $slug;
     }
 
-    public function getcreatedAtAttribute()
+    protected function createdAt(): Attribute
     {
-        return Carbon::make($this->attributes['created_at'])->format('d/m/Y');
+        return Attribute::make(
+            get: fn($value) => Carbon::make($value)->format('d/m/Y'),
+        );
     }
 
     public function courses()

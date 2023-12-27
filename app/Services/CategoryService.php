@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Services;
 
@@ -14,11 +14,13 @@ class CategoryService
         $this->repository = $repository;
     }
 
-    public function getAll(string $filter = ''): array
+    public function getAll(string $filter = '', int $page = 1)
     {
-        $users = $this->repository->getAll($filter);
+        return $categories = $this->repository->getAll(
+            filter: $filter,
+            page: $page
+        );
 
-        return converItemsOfArrayToObject($users);
     }
 
     public function findById(string $id): object|null

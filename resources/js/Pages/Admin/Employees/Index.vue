@@ -12,7 +12,7 @@
                 </InfoButton>
         </div>
     </div>
-        
+
         <div class="inline-block min-w-full overflow-w-auto rounded-lg shadow">
             <table class="w-full whitespace-no-wrap">
                 <thead>
@@ -56,12 +56,12 @@
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <WarningButtom @click="event => openModal(2, emp.name, emp.email, emp.phone, emp.department_id, emp.id)">
                                 <i class=" text-orange-400 fa-solid fa-pencil"></i>
-                            </WarningButtom>  
+                            </WarningButtom>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <DangerButttom @click="event => deleteEmployee(emp.id, emp.name)">
                                 <i class=" text-red-400 fa-solid fa-trash"></i>
-                            </DangerButttom>                             
+                            </DangerButttom>
                         </td>
                     </tr>
                 </tbody>
@@ -73,7 +73,7 @@
                 @page-changed="$event => onPageClick($event)"
                 ></VueTailindPagination>
             </div>
-            
+
         </div>
         <Modal :show="modal" @close="closeModal">
             <h2 class="p-3 pt-3 text-lg text-center font.medium text-hray-900">{{ title}}</h2>
@@ -116,7 +116,7 @@
                 </SecundaryButton>
             </div>
             </div>
-            
+
         </Modal>
     </AuthenticatedLayout>
 </template>
@@ -131,8 +131,7 @@ import TextInput from '@/Components/TextInput.vue';
 import Pagination from '@/Components/Pagination.vue'
 import SelectInput from '@/Components/SelectInput.vue';
 import WarningButtom from '@/Components/Warningbuttom.vue';
-import SecundarygButtom from '@/Components/SecondaryButton.vue';
-import DangerButton from '@/Components/DangerButton.vue';
+
 import Modal from '@/Components/Modal.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { nextTick, ref } from 'vue';

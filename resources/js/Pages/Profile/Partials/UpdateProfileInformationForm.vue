@@ -31,7 +31,7 @@ const submitForm = () => {
     formImage.post(route('admin.profile.update.image', id.value), {
         forceFormData: true,
         onSuccess: () => {message('Foto atualizada com sucesso!')},
-       
+
     })
 };
 
@@ -128,13 +128,13 @@ const form = useForm({
                     <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out">
                         <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Salvar.</p>
                     </Transition>
-                </div>            
+                </div>
             </form>
-           
+
             <div class="flex items-center justify-center gap-x-6">
-                <a @click="event => openModal(user.name, user.id)" class="cursor-pointer items-center">                           
-                <img class="h-48 w-48 rounded-full" v-if="user.image" :src="user.image"/>
-                <img class="h-48 w-48 rounded-full" v-else :src="user.image"/></a>                    
+                <a @click="event => openModal(user.name, user.id)" class="cursor-pointer items-center">
+                <img class="h-48 w-48 rounded-full"  :src="user.photo"/>
+                </a>
             </div>
         </div>
     </section>
@@ -147,8 +147,8 @@ const form = useForm({
                     @input="formImage.image = $event.target.files[0]" type="file" />
                     <InputError :message="formImage.errors.image" class="mt-2"></InputError>
                 </div>
-        
-            
+
+
                 <div class="p-3 flex justify-around">
                     <PrimaryButton :disabled="form.processing" @click="save">
                         <i class="fa fa-save">  Salvar</i>
@@ -158,8 +158,8 @@ const form = useForm({
                             <i class="fa fa-plus text-red-900"> Cancelar</i>
                         </SecondarygButton>
                     </div>
-                </div>  
-            </form>    
-            
+                </div>
+            </form>
+
         </Modal>
 </template>

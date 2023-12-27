@@ -17,15 +17,24 @@ class CategoryController extends Controller
     {
         $this->service = $service;
     }
-    
+
     public function index(Request $request)
     {
         $categories = $this->service->getAll(
-            filter: $request->filter ?? ""
+            filter: $request->filter ?? "",
+            page: (int) $request->get('page', 1),
         );
-        
+
+        $array = new \stdClass();
+        $array->data =  $categories->links();
+        $ar = (object) $array->data->getData();
+        $array->getData =  $ar;
+        $array->getLinks = $array->getData->paginator;
+        $array->setLinks = $array->getLinks;
+        $data = (object) $array->setLinks;
+
         return Inertia::render('Admin/Categories/Index', [
-            'categories' => $categories,
+            'categories' =>  $data,
         ]);
     }
 
@@ -58,7 +67,7 @@ class CategoryController extends Controller
     {
 
         $data = $request->all();
-    
+
         if(!$this->service->update($id, $data)){
             return back()->with('error','Opps!, Erro ao atualizar o usuário.');
         }
@@ -77,12 +86,12 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $category = Category::findOrFail($category->id);
-    
+
         if($category->destroy($category->id)){
             return redirect()->route('admin.categories.index')->with('success','Pronto!, Usuário deletado com sucesso.');
         }else{
             return redirect()->route('admin.categories.index')->with('error','Opps!, Erro ao deletar o usuário.');
         }
     }
-    
+
 }

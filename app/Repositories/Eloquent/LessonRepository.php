@@ -3,6 +3,8 @@ namespace App\Repositories\Eloquent;
 
 use App\Models\Lesson as Model;
 use App\Repositories\LessonRepositoryInterface;
+use App\Repositories\PaginationInterface;
+use App\Repositories\Presenters\PaginationPresenter;
 use App\Repositories\Traits\RepositoryTrait;
 
 class LessonRepository implements LessonRepositoryInterface
@@ -16,7 +18,7 @@ class LessonRepository implements LessonRepositoryInterface
         $this->model = $model;
     }
 
-    public function getAllByModuleId(string $moduleId, string $filter = ''): array
+    public function getAllByModuleId(string $moduleId, string $filter = '', int $page): PaginationInterface
     {
         $lessons = $this->model
                         ->where(function ($query) use ($filter) {
@@ -25,16 +27,16 @@ class LessonRepository implements LessonRepositoryInterface
                             }
                         })
                         ->where('module_id', $moduleId)
-                        ->get();
+                        ->paginate()->withQueryString();
 
-        return $lessons->toArray();
+        return new PaginationPresenter($lessons);
     }
 
     public function findById(string $id): object
     {
         return $this->model->find($id);
     }
-   
+
 
     public function createByModule(string $moduleId, array $data): object
     {
@@ -90,5 +92,5 @@ class LessonRepository implements LessonRepositoryInterface
             'lesson_id' => $lessonId
         ]);
     }
-    
+
 }

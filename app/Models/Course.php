@@ -12,12 +12,9 @@ use Illuminate\Support\Facades\Storage;
 class Course extends Model
 {
     use HasFactory, UuidTrait;
-
     public $incrementing = false;
-
     protected $keyType = 'uuid';
     protected $appends = ['photo'];
-
     protected $fillable = [
         'category_id',
         'name',

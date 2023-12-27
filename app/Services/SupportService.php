@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Services;
 
@@ -12,12 +12,23 @@ class SupportService
     {
         $this->repository = $repository;
     }
-
-    public function getSupports(string $status = 'P'): array
+    public function paginate(
+        int $page = 1,
+        int $totalPerPage = 15,
+        string $filter = null
+    ): PaginationInterface {
+        return $this->repository->paginate(
+            page: $page,
+            totalPerPage: $totalPerPage,
+            filter: $filter,
+        );
+    }
+    public function getSupports(string $status = 'P', int $page = 1)
     {
-        $supports = $this->repository->getByStatus($status);
-
-        return converItemsOfArrayToObject($supports);
+        return $this->repository->getByStatus(
+            status: $status,
+            page: $page,
+        );
     }
 
     public function getSupport(string $id): object|null

@@ -33,7 +33,6 @@ class User extends Authenticatable
         'email',
         'password',
         'image',
-        'urlimage',
     ];
 
     /**
@@ -95,7 +94,6 @@ class User extends Authenticatable
                  if (!empty($this->attributes['image'])) {
                      return Storage::url($this->attributes['image']);
                  }
-
                  return asset('back/assets/images/no-image.png');
              }
          );

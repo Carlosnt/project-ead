@@ -1,7 +1,7 @@
 <template>
     <Head title="Categorias" />
 
-    <AuthenticatedLayout>        
+    <AuthenticatedLayout>
             <nav class="flex" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-3">
                 <li class="inline-flex items-center">
@@ -10,8 +10,7 @@
                     Home
                 </a>
                 </li>
-                
-               
+
                 <li aria-current="page">
                 <div class="flex items-center">
                     <svg class="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
@@ -24,85 +23,78 @@
         </nav>
 
         <div class="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
-            
             <h3 class="text-lg leading-6 text-gray-900">Lista de Categorias</h3>
-
-            
             <div class="py-3 float-right">
-               
-                    <div class="py-3 float-right">
-                        <div class="bg-blue-400 rounded-lg place-items-center">
-                            <PrimaryButton @click="$event => openModal(1)">
-                                <span class="flex items-center gap-x-3 px-1 py-0.5">
-                                    <PlusIcon class="w-5 h-5 shrink-0"/> 
-                                    Nova categoria
-                                </span>
-                            </PrimaryButton>
-                        </div>
-                    </div>    
-                
-            </div>           
+                <div class="py-3 float-right">
+                    <div class="bg-blue-400 rounded-lg place-items-center">
+                        <PrimaryButton @click="$event => openModal(1)">
+                            <span class="flex items-center gap-x-3 px-1 py-0.5">
+                                <PlusIcon class="w-5 h-5 shrink-0"/>
+                                Nova categoria
+                            </span>
+                        </PrimaryButton>
+                    </div>
+                </div>
+            </div>
         </div>
        <div class="w-full rounded-lg bg-white mb-2">
         <form v-on:submit.prevent="searchForm()" class="w-full grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                 <div class="p-3 mt-3 sm:col-span-4 sm:col-start-1">
-                    
                     <input id="filter" v-model="search.filter" placeholder="Pesquisar" class="block w-full w-3/4 rounded-md form-input focus:border-indigo-600"
                      type="text" />
                 </div>
-        
-            
-                <div class="p-3 flex flex-col self-center items-center mt-3 sm:col-span-2 ">
+
+                <div class="p-3 flex flex-col self-center items-center mt-2 sm:col-span-2">
                     <PrimaryButton :disabled="search.processing">
-                        <i class="fa fa-search">  Pesquisar</i>
+                            <span class="flex items-center gap-x-3 px-1 py-0.5">
+                                <MagnifyingGlassIcon   class="w-5 h-5 shrink-0"/>
+                                Filtrar
+                            </span>
                     </PrimaryButton>
-                    
-                </div>  
-            </form> 
-            </div> 
+                </div>
+        </form>
+       </div>
 
         <div class="overflow-hidden rounded-lg border border-gray-200 shadow-md">
-            
             <table class="w-full border-collapse bg-white text-left text-sm text-gray-500">
                 <thead class="bg-gray-50">
                 <tr>
                     <th scope="col" class="px-6 py-4 font-medium text-gray-900">Nome</th>
                     <th scope="col" class="px-6 py-4 font-medium text-gray-900">Cursos</th>
-                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Cadastro</th>                    
+                    <th scope="col" class="px-6 py-4 font-medium text-gray-900">Cadastro</th>
                     <th scope="col" class="px-6 py-4 font-medium text-gray-900"></th>
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 border-t border-gray-100">
-                    
-                <tr v-for="category in categories" :key="category.id" class="hover:bg-gray-50">
-                    
+                <tr v-for="category in props.categories.data" :key="category.id" class="hover:bg-gray-50">
                     <th class="flex gap-3 px-6 py-4 font-normal text-gray-900">
                     <div class="text-sm">
-                        <div class="font-medium text-gray-700">{{ category.name }}</div>                        
+                        <div class="font-medium text-gray-700">{{ category.name }}</div>
                     </div>
                     </th>
-                    <td class="px-6 py-4">{{ category.courses_count }}</td>                   
+                    <td class="px-6 py-4">{{ category.courses_count }}</td>
                     <td class="px-6 py-4">{{ category.created_at }}</td>
                     <td class="px-6 py-4">
                     <div class="flex justify-end gap-4">
-
-                        <LinkButton x-data="{ tooltip: 'Editar' }" v-on:click="event => openModal(2, category.name, category.description, category.id)">
+                        <LinkButton v-on:click="event => openModal(2, category.name, category.description, category.id)">
                             <PencilIcon class="h-6 w-6 text-gray-500" />
                         </LinkButton>
 
-                        <Link x-data="{ tooltip: 'Deletar' }" @click="event => deleteRegistro(category.id, category.name)">
+                        <Link href="" @click="event => deleteRegistro(category.id, category.name)">
                             <TrashIcon class="h-6 w-6 text-gray-500" />
                         </Link>
-                        
                     </div>
                     </td>
                 </tr>
                 </tbody>
             </table>
-           
+
+            <div class="bg-white grid v-screen place-items-center">
+                <Pagination :links="props.categories.links"></Pagination>
+            </div>
+
         </div>
             <Modal :show="modal" @close="closeModal">
-           
                 <h2 class="p-3 pt-3 text-lg text-center font.medium text-hray-900">{{ title}}</h2>
                 <div class="p-3 mt-3">
                     <InputLabel for="name" value="Nome"></InputLabel>
@@ -119,15 +111,24 @@
                 </div>
 
                 <div class="p-3 flex justify-around">
-                    <PrimaryButton :disabled="form.processing" @click="save">
-                        <i class="fa fa-save">  Salvar</i>
-                    </PrimaryButton>
-                    <div class="p-3 flex justify-end">
-                        <SecondarygButton :disabled="form.processing" @click="closeModal">
-                            <i class="fa fa-plus text-red-900"> Cancelar</i>
+                    <div class="p-3 flex flex-col self-center items-center mt-2 sm:col-span-2">
+                        <PrimaryButton :disabled="search.processing" @click="save">
+                            <span class="flex items-center gap-x-3 px-1 py-0.5">
+                                <PlusIcon class="w-5 h-5 shrink-0"/>
+                                Salvar
+                            </span>
+                        </PrimaryButton>
+                    </div>
+
+                    <div class="p-3 flex flex-col self-center items-center mt-2 sm:col-span-2 justify-end">
+                        <SecondarygButton :disabled="form.processing" @click="closeModal" class="border-red-500">
+                            <span class="flex items-center text-red-500 gap-x-3 px-1 py-0.5">
+                                <XMarkIcon class="w-5 h-5 shrink-0"/>
+                                Cancelar
+                            </span>
                         </SecondarygButton>
                     </div>
-                </div>  
+                </div>
         </Modal>
 
     </AuthenticatedLayout>
@@ -144,18 +145,17 @@ import LinkButton from '@/Components/LinkButton.vue';
 import Modal from '@/Components/Modal.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
-import { ref } from 'vue';
-import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { ref, watch } from 'vue';
+import { PlusIcon, PencilIcon, TrashIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 
 
-const imageInput = ref(null);
 const modal = ref(false);
 const title = ref('');
 const operation = ref(1);
 const id = ref('');
-
+const filter= ref('');
 const props = defineProps({
-    categories: {type:Object}
+    categories: {type:Object},
 })
 
 const search = useForm({
@@ -163,10 +163,15 @@ const search = useForm({
 });
 
 const form = useForm({
-    name:'', 
+    name:'',
     description:''
 });
+const formPage = useForm({
+});
 
+const onPageClick = (filter) => {
+    formPage.get(route('admin.categories.index', {filter:filter}));
+}
 const searchForm = () => {
     search.get(route('admin.categories.index'))
 }

@@ -1,10 +1,12 @@
 <?php
 namespace App\Repositories\Eloquent;
 
+use App\Events\SupportReplied;
 use App\Models\ReplySupport;
+use App\Repositories\ReplySupportRepositoryInterface;
 use App\Repositories\Traits\RepositoryTrait;
 
-class ReplySupportRepository
+class ReplySupportRepository implements ReplySupportRepositoryInterface
 {
     use RepositoryTrait;
     protected $entity;
@@ -16,16 +18,11 @@ class ReplySupportRepository
 
     public function createReplyToSupport(array $data)
     {
-        $user = $this->getUserAuth();
+        $replySupport = $this->entity->create($data);
 
-        return $this->entity
-            ->create([
-                'support_id' =>  $data['support'],
-                'description' => $data['description'],
-                'user_id' => $user->id,
-            ]);
+        event(new SupportReplied($replySupport));
+
+        return $replySupport;
     }
-
-
 
 }

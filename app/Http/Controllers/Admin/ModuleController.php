@@ -29,20 +29,28 @@ class ModuleController extends Controller
         if (!$course = $this->repositoryCourse->findById($courseId))
             return back();
 
-        $data = $this->repository->getAllByCourseId(
+        $modules = $this->repository->getAllByCourseId(
             courseId: $courseId,
-            filter: $request->filter ?? ''
+            filter: $request->filter ?? '',
+            page: (int) $request->get('page', 1),
         );
-        $modules = converItemsOfArrayToObject($data);
+
+        $array = new \stdClass();
+        $array->data =  $modules->links();
+        $ar = (object) $array->data->getData();
+        $array->getData =  $ar;
+        $array->getLinks = $array->getData->paginator;
+        $array->setLinks = $array->getLinks;
+        $data = (object) $array->setLinks;
 
         return Inertia::render('Admin/Courses/Modules/Index-modules', [
             'course' => $course,
-            'modules' => $modules
+            'modules' => $data
         ]);
     }
 
     public function moduleCourse(string $courseId){
-      
+
         $courses = Course::where('avaialble','=', 1)->get();
         $course = Course::findOrFail($courseId);
         return Inertia::render('Admin/Modules/Module-course',[
@@ -54,7 +62,7 @@ class ModuleController extends Controller
     public function create()
     {
         $courses = Course::where('avaialble','=', 1)->get();
-        
+
         return Inertia::render('Admin/Modules/Create',[
             'courses' => $courses,
         ]);
@@ -80,7 +88,7 @@ class ModuleController extends Controller
             return back();
 
         if (!$module = $this->repository->findById($id))
-            return back();   
+            return back();
 
         $module = Module::findOrFail($module->id);
         return Inertia::render('Admin/Modules/Edit', [
@@ -93,7 +101,7 @@ class ModuleController extends Controller
     {
         if (!$this->repositoryCourse->findById($courseId))
         return back();
-    
+
         if(!$this->repository->update($id, $request->only('name'))){
             return back()->with('error','Opps!, Erro ao atualizar o módulo.');
         }
@@ -123,5 +131,5 @@ class ModuleController extends Controller
             return redirect()->route('admin.modules.index', $courseId)->with('error','Opps!, Erro ao deletar o módulo.');
         }
     }
-    
+
 }

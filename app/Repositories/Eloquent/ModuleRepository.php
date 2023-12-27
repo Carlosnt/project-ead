@@ -3,6 +3,8 @@ namespace App\Repositories\Eloquent;
 
 use App\Models\Module as Model;
 use App\Repositories\ModuleRepositoryInterface;
+use App\Repositories\PaginationInterface;
+use App\Repositories\Presenters\PaginationPresenter;
 
 class ModuleRepository implements ModuleRepositoryInterface
 {
@@ -13,7 +15,7 @@ class ModuleRepository implements ModuleRepositoryInterface
         $this->model = $model;
     }
 
-    public function getAllByCourseId(string $courseId, string $filter = ''): array
+    public function getAllByCourseId(string $courseId, string $filter = '', int $page): PaginationInterface
     {
         $data = $this->model
                         ->where(function ($query) use ($filter) {
@@ -23,9 +25,9 @@ class ModuleRepository implements ModuleRepositoryInterface
                         })
                         ->withCount('lessons')
                         ->where('course_id', $courseId)
-                        ->get();
+                        ->paginate()->withQueryString();
 
-        return $data->toArray();
+        return new PaginationPresenter($data);
     }
 
     public function findById(string $id): object|null

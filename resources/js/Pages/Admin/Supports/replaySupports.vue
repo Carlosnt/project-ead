@@ -39,13 +39,22 @@
                 {{ support.name }}
             </div>
             <div id="messages" class="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
-
-                <div class="chat-message">
-                    <div v-for="reply in support.replies" :key="reply.id" :class="reply.user_id === support.user.id ? 'flex items-end mb-2':'flex items-end justify-end mb-2'">
-                        <div :class="reply.user_id === support.user.id ? 'flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start': 'flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-start'">
-                        <div><span :class="reply.user_id === support.user.id ? 'px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600' : 'px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white' ">{{ reply.description}}</span></div>
+                <div v-for="reply in support.replies" :key="reply.id">
+                    <div class="chat-message">
+                        <div v-if="reply.user != null ">
+                            <div v-if="reply.user.id === support.user.id" :class="reply.user_id === support.user.id ? 'flex items-end mb-2':'flex items-end mb-2'">
+                                <div :class="reply.user_id === support.user.id ? 'flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start': 'flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-start'">
+                                <div><span :class="reply.user_id === support.user.id ? 'px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600' : 'px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white' " v-html="reply.htmldescription"></span></div>
+                                </div>
+                                <img :src="reply.user.photo" alt="My profile" :class="reply.user_id === support.user.id ? 'order-1' + 'w-6 h-6 rounded-full' : 'order-2 '+ 'w-6 h-6 rounded-full'">
+                            </div>
                         </div>
-                        <img src="" alt="My profile" :class="reply.user_id === support.user.id ? 'order-1' : 'order-2'+ 'w-6 h-6 rounded-full' ">
+                        <div v-else="reply.user.id === support.user.id" :class="reply.user_id === support.user.id ? 'flex items-end mb-2':'flex items-end justify-end mb-2'">
+                            <div :class="reply.user_id === support.user.id ? 'flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start': 'flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-start'">
+                                <div><span :class="reply.user_id === support.user.id ? 'px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600' : 'px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white' " v-html="reply.htmldescription"></span></div>
+                            </div>
+                            <img :src="reply.admin.photo" alt="My profile" :class="reply.user_id === support.user.id ? 'order-1' + 'w-6 h-6 rounded-full' : 'order-2 '+ 'w-6 h-6 rounded-full'">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -54,14 +63,15 @@
         <div class="flex-1 p:2 sm:p-6 flex flex-col w-full rounded-lg bg-white mb-2">
 
                 <div class="flex w-full">
-                    <form class="w-full">
-                        <Editor type="text" class="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 bg-gray-200 rounded-md py-3"></Editor>
+                    <form @submit.prevent="$event => form.post(route('admin.replies.store', props.support.id))" class="w-full">
+                        <Editor type="text" v-model="form.description" class="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 bg-gray-200 rounded-md py-3"></Editor>
+                        <input type="hidden" v-model="form.support_id">
+                        <InputError :message="form.errors.description" class="mt-2"></InputError>
+
                         <div class=" items-center inset-y-0 hidden sm:flex">
-                            <button type="button" class="mt-5 inline-flex items-center justify-center rounded-lg px-4 py-3 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none">
+                            <button type="submit" class="mt-5 inline-flex items-center justify-center rounded-lg px-4 py-3 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none">
                                 <span class="font-bold">Responder</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-6 w-6 ml-2 transform rotate-90">
-                                    <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
-                                </svg>
+                                <PaperAirplaneIcon class="h-6 w-6 text-white-500" />
                             </button>
                         </div>
                     </form>
@@ -74,41 +84,21 @@
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import Pagination from '@/Components/Pagination.vue'
 import Editor from '@/Components/Editor.vue'
-import DangerButton from '@/Components/DangerButton.vue';
 import { Head,Link,useForm } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
+import InputError from "@/Components/InputError.vue";
+import { PaperAirplaneIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
     support: {type:Object}
 })
 
 const form = useForm({
-    id: ''
+    user_id: '',
+    admin_id: '',
+    support_id: props.support.id,
+    description: ''
 });
 
 </script>
-
-<style>
-.scrollbar-w-2::-webkit-scrollbar {
-  width: 0.25rem;
-  height: 0.25rem;
-}
-
-.scrollbar-track-blue-lighter::-webkit-scrollbar-track {
-  --bg-opacity: 1;
-  background-color: #f7fafc;
-  background-color: rgba(247, 250, 252, var(--bg-opacity));
-}
-
-.scrollbar-thumb-blue::-webkit-scrollbar-thumb {
-  --bg-opacity: 1;
-  background-color: #edf2f7;
-  background-color: rgba(237, 242, 247, var(--bg-opacity));
-}
-
-.scrollbar-thumb-rounded::-webkit-scrollbar-thumb {
-  border-radius: 0.25rem;
-}
-</style>

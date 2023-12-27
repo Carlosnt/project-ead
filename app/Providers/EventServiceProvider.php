@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\SupportReplied;
+use App\Listeners\SendMailSupportReplied;
+use App\Models\ReplySupport;
+use App\Observers\ReplySupportObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -18,6 +22,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        SupportReplied::class => [
+            SendMailSupportReplied::class
+        ]
     ];
 
     /**
@@ -27,7 +34,7 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        ReplySupport::observe(ReplySupportObserver::class);
     }
 
     /**

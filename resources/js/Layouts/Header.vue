@@ -1,5 +1,5 @@
 <template>
-    <header class="flex items-center justify-between border-b-1 border-gray-600 bg-white px-6 py-4">
+    <header class="flex items-center justify-between border-b-2 border-indigo-600 bg-white px-6 py-4">
         <div class="flex items-center">
             <button @click="$page.props.showingMobileMenu = !$page.props.showingMobileMenu" class="text-gray-500 focus:outline-none lg:hidden">
                 <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -10,7 +10,7 @@
 
         <div class="flex items-center">
             <!-- Avatar -->
-          
+
             <dropdown>
                 <template #trigger>
                     <li class="relative list-none float-left mr-4" data-te-dropdown-ref>
@@ -26,14 +26,14 @@
                 class="rounded-full"
                 style="height: 22px; width: 22px"
                 alt="Avatar"
-                loading="lazy" />           
-            </a>            
+                loading="lazy" />
+            </a>
           </li>
                     <button @click="dropdownOpen = ! dropdownOpen" class="relative block overflow-hidden">
                         {{ $page.props.auth.user.name }}
                     </button>
                 </template>
-                
+
                 <template #content>
                     <dropdown-link :href="route('admin.profile.edit')">
                         Perfil

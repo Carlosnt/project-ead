@@ -47,12 +47,14 @@
                      type="text" />
                 </div>
 
-                <div class="p-3 flex flex-col self-center items-center mt-3 sm:col-span-2 ">
-                    <PrimaryButton :disabled="search.processing">
-                        <i class="fa fa-search">  Pesquisar</i>
-                    </PrimaryButton>
-
-                </div>
+            <div class="p-3 flex flex-col self-center items-center mt-2 sm:col-span-2">
+                <PrimaryButton :disabled="search.processing">
+                            <span class="flex items-center gap-x-3 px-1 py-0.5">
+                                <MagnifyingGlassIcon   class="w-5 h-5 shrink-0"/>
+                                Pesquisar
+                            </span>
+                </PrimaryButton>
+            </div>
             </form>
             </div>
 
@@ -70,7 +72,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-100 border-t border-gray-100">
 
-                <tr v-for="course in courses" :key="course.id" class="hover:bg-gray-50">
+                <tr v-for="course in courses.data" :key="course.id" class="hover:bg-gray-50">
 
                     <th class="flex gap-3 px-6 py-4 font-normal text-gray-900">
                     <div class="relative h-10 w-10">
@@ -111,7 +113,9 @@
                 </tr>
                 </tbody>
             </table>
-
+            <div class="bg-white grid v-screen place-items-center">
+                <Pagination :links="props.courses.links"></Pagination>
+            </div>
         </div>
             <Modal :show="modal" @close="closeModal">
                 <form v-on:submit.prevent="submitForm()">
@@ -154,6 +158,7 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
 import { ref } from 'vue';
 import { PlusIcon,Bars3Icon,PencilIcon,TrashIcon,InformationCircleIcon } from '@heroicons/vue/24/outline';
+import {MagnifyingGlassIcon} from "@heroicons/vue/24/outline/index.js";
 
 
 const imageInput = ref(null);
